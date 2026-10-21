@@ -11,7 +11,7 @@ Large software projects re-run hundreds of automated tests after every code chan
 
 | Name | Roll number | What I built |
 |---|---|---|
-| [Your name] | [Roll number] | Solo project: everything, including data collection, the Kalman filter, all optimizers, exact solvers, mutation evaluation, experiments and the dashboard |
+| Aiman Farooqu | 24k-3077 | Solo project: everything, including data collection, the Kalman filter, all optimizers, exact solvers, mutation evaluation, experiments and the dashboard |
 
 ---
 
