@@ -1,4 +1,6 @@
 
+import time
+
 from src.algorithms.random_selection import RandomSelectionOptimizer
 from src.algorithms.greedy import GreedyOptimizer
 from src.algorithms.hill_climbing import HillClimbingOptimizer
@@ -9,8 +11,8 @@ from src.algorithms.csp_optimizer import CSPOptimizer
 
 def run_all_optimizers(problem, seed=42):
     """
-    Run all optimization algorithms on the same problem
-    and collect their evaluation results.
+    Run all optimization algorithms and collect their results,
+    including optimizer execution time.
     """
 
     optimizers = {
@@ -33,6 +35,8 @@ def run_all_optimizers(problem, seed=42):
 
     for name, optimizer in optimizers.items():
 
+        start_time = time.perf_counter()
+
         if name == "UCS":
             selected_tests = optimizer.uniform_cost_search()
 
@@ -42,6 +46,14 @@ def run_all_optimizers(problem, seed=42):
         else:
             selected_tests = optimizer.optimize()
 
-        results[name] = problem.evaluate(selected_tests)
+        end_time = time.perf_counter()
+
+        optimizer_runtime = end_time - start_time
+
+        evaluation = problem.evaluate(selected_tests)
+
+        evaluation["optimizer_runtime_seconds"] = optimizer_runtime
+
+        results[name] = evaluation
 
     return results

@@ -5,7 +5,6 @@ from pathlib import Path
 
 def build_comparison_report(results):
     """Convert optimizer results into a structured comparison report."""
-
     report = []
 
     for algorithm, result in results.items():
@@ -15,7 +14,8 @@ def build_comparison_report(results):
             "number_of_tests": len(result["selected_tests"]),
             "total_time": result["total_time"],
             "coverage_percentage": result["coverage_percentage"],
-            "feasible": result["feasible"]
+            "feasible": result["feasible"],
+            "optimizer_runtime_seconds": result["optimizer_runtime_seconds"]
         })
 
     return report
@@ -23,14 +23,14 @@ def build_comparison_report(results):
 
 def format_comparison_report(report):
     """Format comparison results as a readable table."""
-
     headers = [
         "Algorithm",
         "Selected Tests",
         "Count",
-        "Time",
+        "Test Time",
         "Coverage",
-        "Feasible"
+        "Feasible",
+        "Optimizer Runtime (s)"
     ]
 
     rows = []
@@ -42,7 +42,8 @@ def format_comparison_report(report):
             str(result["number_of_tests"]),
             f'{result["total_time"]:.2f}',
             f'{result["coverage_percentage"]:.2f}%',
-            "Yes" if result["feasible"] else "No"
+            "Yes" if result["feasible"] else "No",
+            f'{result["optimizer_runtime_seconds"]:.6f}'
         ])
 
     widths = [
@@ -51,17 +52,13 @@ def format_comparison_report(report):
     ]
 
     header_line = " | ".join(
-        headers[i].ljust(widths[i])
-        for i in range(len(headers))
+        headers[i].ljust(widths[i]) for i in range(len(headers))
     )
 
     separator = "-+-".join("-" * width for width in widths)
 
     table_rows = [
-        " | ".join(
-            row[i].ljust(widths[i])
-            for i in range(len(headers))
-        )
+        " | ".join(row[i].ljust(widths[i]) for i in range(len(headers)))
         for row in rows
     ]
 
@@ -70,14 +67,14 @@ def format_comparison_report(report):
 
 def export_comparison_csv(report, output_path):
     """Export comparison results to a CSV file."""
-
     fieldnames = [
         "algorithm",
         "selected_tests",
         "number_of_tests",
         "total_time",
         "coverage_percentage",
-        "feasible"
+        "feasible",
+        "optimizer_runtime_seconds"
     ]
 
     output_path = Path(output_path)
@@ -85,7 +82,6 @@ def export_comparison_csv(report, output_path):
 
     with output_path.open("w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
-
         writer.writeheader()
 
         for result in report:

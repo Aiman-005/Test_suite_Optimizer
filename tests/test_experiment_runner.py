@@ -57,3 +57,21 @@ def test_all_optimizers_return_valid_test_names():
         for test in result["selected_tests"]:
 
             assert test in problem.suite.tests
+
+
+def test_all_optimizers_record_execution_time():
+
+    problem = load_sample_problem()
+
+    results = run_all_optimizers(problem)
+
+    for result in results.values():
+
+        assert "optimizer_runtime_seconds" in result
+
+        assert isinstance(
+            result["optimizer_runtime_seconds"],
+            float
+        )
+
+        assert result["optimizer_runtime_seconds"] >= 0
