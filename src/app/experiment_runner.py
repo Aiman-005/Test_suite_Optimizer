@@ -21,10 +21,13 @@ def run_all_optimizers(problem, seed=42):
         ),
         "Greedy": GreedyOptimizer(problem),
         "Hill Climbing": HillClimbingOptimizer(
-            problem, max_restarts=10, seed=seed
+        problem, max_restarts=1, max_neighbors=20,
+        max_steps=20, seed=seed
         ),
         "Simulated Annealing": SimulatedAnnealingOptimizer(
-            problem, seed=seed
+            problem, initial_temperature=100,
+            cooling_rate=0.95,
+            iterations=300, seed=seed
         ),
         "UCS": SearchOptimizer(problem),
         "A*": SearchOptimizer(problem),

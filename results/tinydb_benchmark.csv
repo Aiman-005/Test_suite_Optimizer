@@ -1,0 +1,5 @@
+project,optimizer,coverage_percentage,selected_execution_time,feasible,optimizer_runtime_seconds,budget_seconds
+TinyDB,Random,65.71,0.2399,True,0.067,0.24
+TinyDB,Greedy,100.0,0.1647,True,0.0069,0.24
+TinyDB,Hill Climbing,89.8,0.1703,True,0.3536,0.24
+TinyDB,Simulated Annealing,69.8,0.1589,True,0.1964,0.24
