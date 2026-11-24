@@ -1,0 +1,567 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* --------------------------------------------------
+   GLOBAL THEME
+-------------------------------------------------- */
+
+.stApp {
+    background:
+        radial-gradient(
+            ellipse at 75% 0%,
+            color-mix(in srgb, var(--accent) 10%, transparent),
+            transparent 38%
+        ),
+        var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+}
+
+header[data-testid="stHeader"] {
+    background: transparent;
+}
+
+.block-container {
+    max-width: 1450px;
+    padding: 2.2rem 3rem 3rem;
+}
+
+[data-testid="stSidebar"] {
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding-top: 1.5rem;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', sans-serif !important;
+    color: var(--text) !important;
+    letter-spacing: -0.035em;
+}
+
+p, label, span {
+    font-family: 'DM Sans', sans-serif;
+}
+
+.stMarkdown, [data-testid="stWidgetLabel"] {
+    color: var(--text);
+}
+
+/* --------------------------------------------------
+   CUSTOM HERO AND CARDS
+-------------------------------------------------- */
+
+.hero {
+    padding: 1.7rem 0 1.5rem;
+}
+
+.eyebrow {
+    color: var(--cyan);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+}
+
+.hero-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.1rem, 4vw, 3.25rem);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    color: var(--text);
+    margin: 0;
+}
+
+.hero-title span {
+    background: linear-gradient(100deg, #a99cff, #20bccc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-top: 0.9rem;
+    max-width: 650px;
+    line-height: 1.7;
+}
+
+.section-heading {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 1.5rem 0 0.25rem;
+}
+
+.section-caption {
+    color: var(--muted);
+    font-size: 0.84rem;
+    margin-bottom: 1rem;
+}
+
+.metric-card,
+.project-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 1.2rem 1.25rem;
+    transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.metric-card {
+    min-height: 126px;
+}
+
+.metric-card:hover,
+.project-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+}
+
+.metric-label,
+.metric-note,
+.project-meta {
+    color: var(--muted);
+}
+
+.metric-value,
+.project-name {
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+}
+
+.metric-value {
+    font-size: 2rem;
+    margin-top: 0.5rem;
+}
+
+.project-name {
+    font-size: 1rem;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #45b98c;
+    margin-right: 7px;
+}
+
+/* --------------------------------------------------
+   METRICS AND FORMS
+-------------------------------------------------- */
+
+[data-testid="stMetric"] {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 1.15rem;
+    transition: border-color 180ms ease, transform 180ms ease;
+}
+
+[data-testid="stMetric"]:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+[data-testid="stMetricLabel"],
+[data-testid="stMetricValue"],
+[data-testid="stMetricDelta"] {
+    color: var(--text) !important;
+}
+
+[data-testid="stMetricLabel"] {
+    opacity: 0.8;
+}
+
+[data-testid="stForm"] {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 1.25rem;
+}
+
+/* --------------------------------------------------
+   INPUTS AND DROPDOWNS
+-------------------------------------------------- */
+
+.stTextInput input,
+.stNumberInput input,
+.stTextArea textarea {
+    background-color: var(--panel) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+    border-radius: 9px !important;
+    caret-color: var(--accent);
+}
+
+.stTextInput input::placeholder,
+.stNumberInput input::placeholder,
+.stTextArea textarea::placeholder {
+    color: var(--muted) !important;
+    opacity: 0.8;
+}
+
+[data-baseweb="input"],
+[data-baseweb="select"],
+[data-baseweb="textarea"] {
+    border-radius: 9px;
+}
+
+[data-baseweb="select"] > div {
+    background-color: var(--panel) !important;
+    border-color: var(--border) !important;
+    color: var(--text) !important;
+}
+
+[data-baseweb="select"] span,
+[data-baseweb="select"] input {
+    color: var(--text) !important;
+}
+
+/* Dropdown popup and options */
+
+[data-baseweb="popover"],
+[data-baseweb="menu"],
+[data-baseweb="popover"] ul {
+    background-color: var(--panel) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+}
+
+[role="option"] {
+    background-color: var(--panel);
+    color: var(--text) !important;
+}
+
+[role="option"]:hover {
+    background-color: color-mix(
+        in srgb,
+        var(--accent) 15%,
+        var(--panel)
+    ) !important;
+}
+
+/* --------------------------------------------------
+   BUTTONS
+-------------------------------------------------- */
+
+.stButton > button,
+.stDownloadButton > button,
+.stFormSubmitButton > button {
+    border-radius: 9px;
+    border: 1px solid color-mix(
+        in srgb,
+        var(--accent) 45%,
+        transparent
+    );
+    background: color-mix(
+        in srgb,
+        var(--accent) 12%,
+        transparent
+    );
+    color: var(--text) !important;
+    transition: all 180ms ease;
+}
+
+.stButton > button:hover,
+.stDownloadButton > button:hover,
+.stFormSubmitButton > button:hover {
+    background: color-mix(
+        in srgb,
+        var(--accent) 22%,
+        transparent
+    );
+    border-color: var(--accent);
+}
+
+.stButton > button:focus,
+.stDownloadButton > button:focus,
+.stFormSubmitButton > button:focus {
+    box-shadow: 0 0 0 2px color-mix(
+        in srgb,
+        var(--accent) 35%,
+        transparent
+    );
+}
+
+/* --------------------------------------------------
+   RADIO BUTTONS AND CHECKBOXES
+-------------------------------------------------- */
+
+[data-testid="stRadio"],
+[data-testid="stCheckbox"] {
+    color: var(--text);
+}
+
+[data-testid="stRadio"] label,
+[data-testid="stCheckbox"] label {
+    color: var(--text) !important;
+}
+
+/* --------------------------------------------------
+   ALERTS, EXPANDERS AND CAPTIONS
+-------------------------------------------------- */
+
+[data-testid="stAlert"] {
+    border-radius: 12px;
+}
+
+[data-testid="stExpander"] {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+[data-testid="stExpander"] summary,
+[data-testid="stExpander"] summary p {
+    color: var(--text) !important;
+}
+
+.stCaption,
+[data-testid="stCaptionContainer"] {
+    color: var(--muted);
+}
+
+/* --------------------------------------------------
+   TABLES AND DATAFRAMES
+-------------------------------------------------- */
+
+[data-testid="stDataFrame"],
+[data-testid="stTable"] {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* --------------------------------------------------
+   PLOTLY CHARTS
+-------------------------------------------------- */
+
+div[data-testid="stPlotlyChart"] {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 0.5rem;
+}
+
+div[data-testid="stPlotlyChart"] .modebar {
+    opacity: 1 !important;
+    background: var(--panel) !important;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 4px;
+}
+
+div[data-testid="stPlotlyChart"] .modebar-btn {
+    opacity: 1 !important;
+}
+
+div[data-testid="stPlotlyChart"] .modebar-btn:hover {
+    background: var(--border) !important;
+}
+
+div[data-testid="stPlotlyChart"] .modebar-btn[data-title="Fullscreen"] {
+    background: color-mix(
+        in srgb,
+        var(--accent) 22%,
+        transparent
+    );
+    border-radius: 5px;
+}
+hr {
+    border-color: var(--border);
+}
+
+/* --------------------------------------------------
+   PREMIUM SIDEBAR
+-------------------------------------------------- */
+
+/* Hide Streamlit's automatic navigation */
+[data-testid="stSidebarNav"] {
+    display: none;
+}
+
+[data-testid="stSidebar"] {
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+}
+
+[data-testid="stSidebar"] .block-container {
+    padding: 1rem 1rem 2rem;
+}
+
+/* Brand */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 2px 8px;
+}
+
+.sidebar-logo {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #8b7cff, #20bccc);
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    box-shadow: 0 5px 18px rgba(139, 124, 255, 0.22);
+}
+
+.sidebar-brand-title {
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.sidebar-brand-subtitle {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    margin-top: 2px;
+}
+
+.sidebar-tagline {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    padding: 5px 2px 12px;
+}
+
+/* Section labels */
+.sidebar-section-label {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin: 8px 0 12px;
+}
+
+/* Navigation links */
+[data-testid="stSidebar"] [data-testid="stPageLink"] a {
+    border-radius: 9px;
+    padding: 9px 11px;
+    color: var(--text);
+    transition: background 160ms ease, color 160ms ease;
+}
+
+[data-testid="stSidebar"] [data-testid="stPageLink"] a:hover {
+    background: color-mix(
+        in srgb,
+        var(--accent) 10%,
+        var(--panel)
+    );
+    color: var(--accent);
+}
+
+[data-testid="stSidebar"] [data-testid="stPageLink"] a[aria-current="page"] {
+    background: color-mix(
+        in srgb,
+        var(--accent) 13%,
+        var(--panel)
+    );
+    color: var(--accent);
+    font-weight: 700;
+}
+
+/* Status card */
+.sidebar-status-card {
+    background: color-mix(
+        in srgb,
+        var(--accent) 6%,
+        var(--panel)
+    );
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px;
+    margin-top: 5px;
+}
+
+.sidebar-status-top {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.sidebar-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22a879;
+}
+
+.sidebar-status-label {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.sidebar-status-title {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.sidebar-status-caption {
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+/* Footer */
+.sidebar-footer {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1.8;
+    margin-top: 28px;
+    text-align: center;
+}
+
+.sidebar-footer span {
+    font-weight: 400;
+    letter-spacing: 1.5px;
+}
+/*reduces sidebar top empty space */
+/* COMPACT SIDEBAR TOP SPACING */
+[data-testid="stSidebarHeader"] {
+    height: 2.2rem !important;
+    min-height: 2.2rem !important;
+    padding: 0 0.5rem !important;
+}
+
+[data-testid="stSidebarContent"] {
+    padding-top: 0 !important;
+}
+
+[data-testid="stSidebar"] .block-container {
+    padding-top: 0 !important;
+    padding-bottom: 1rem !important;
+}
+
+.sidebar-brand {
+    margin-top: 0 !important;
+    padding-top: 0.3rem !important;
+}
