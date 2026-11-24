@@ -65,8 +65,9 @@ st.header("K-Means Clustering")
 
 st.write(
     "Tests are grouped using estimated execution duration "
-    "and the number of covered source lines. Features are "
-    "standardized before clustering."
+    "and the number of covered source lines. Both features are "
+    "log-scaled and standardized before clustering, so a few very "
+    "slow tests do not dominate the distances."
 )
 
 cross_summary = read_csv(

@@ -103,22 +103,10 @@ if run_optimization:
                 optimizer = GreedyOptimizer(problem)
 
             elif algorithm == "Hill Climbing":
-                optimizer = HillClimbingOptimizer(
-                    problem,
-                    max_restarts=1,
-                    max_neighbors=20,
-                    max_steps=20,
-                    seed=42
-                )
+                optimizer = HillClimbingOptimizer(problem, seed=42)
 
             else:
-                optimizer = SimulatedAnnealingOptimizer(
-                    problem,
-                    initial_temperature=100,
-                    cooling_rate=0.95,
-                    iterations=300,
-                    seed=42
-                )
+                optimizer = SimulatedAnnealingOptimizer(problem, seed=42)
 
             selected_tests = optimizer.optimize()
 

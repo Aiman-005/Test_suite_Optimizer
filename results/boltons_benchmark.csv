@@ -1,5 +1,0 @@
-project,optimizer,selected_tests,selected_execution_time,coverage_percentage,feasible,optimizer_runtime_seconds,budget_seconds
-Boltons,Random Selection,474,1.8700873698101024,93.72710622710623,True,1.4228884000040125,1.8701
-Boltons,Greedy,298,1.633871998042657,99.81684981684981,True,0.7395633999985876,1.8701
-Boltons,Hill Climbing,288,1.7946634746437395,87.70604395604396,True,5.88709679999738,1.8701
-Boltons,Simulated Annealing,147,0.4300836230303802,60.82875457875458,True,5.759056999995664,1.8701

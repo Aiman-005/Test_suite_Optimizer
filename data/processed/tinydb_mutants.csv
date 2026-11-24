@@ -1,0 +1,125 @@
+mutant_id,file,line,operator,original,replacement,tests_run,tests_killing,detected
+M000,tinydb/database.py,97,constant,True,False,169,1,True
+M001,tinydb/database.py,127,comparison,in,not in,165,165,True
+M002,tinydb/database.py,161,logical,or,and,6,6,True
+M003,tinydb/database.py,185,comparison,in,not in,1,1,True
+M004,tinydb/database.py,191,comparison,is,is not,1,1,True
+M005,tinydb/database.py,195,comparison,not in,in,1,1,True
+M006,tinydb/database.py,229,constant,False,True,17,1,True
+M007,tinydb/middlewares.py,94,constant,0,1,10,2,True
+M008,tinydb/middlewares.py,95,constant,False,True,10,9,True
+M009,tinydb/middlewares.py,101,comparison,is,is not,5,4,True
+M010,tinydb/middlewares.py,114,constant,1,2,8,2,True
+M011,tinydb/middlewares.py,117,comparison,>=,>,8,2,True
+M012,tinydb/middlewares.py,127,constant,0,1,6,4,True
+M013,tinydb/middlewares.py,127,comparison,>,>=,6,0,False
+M014,tinydb/middlewares.py,130,constant,0,1,6,0,False
+M015,tinydb/middlewares.py,141,constant,True,False,3,0,False
+M016,tinydb/operations.py,63,constant,1,2,2,2,True
+M017,tinydb/operations.py,73,constant,1,2,2,2,True
+M018,tinydb/queries.py,31,negation,not,,2,2,True
+M019,tinydb/queries.py,31,logical,and,or,2,2,True
+M020,tinydb/queries.py,78,comparison,is not,is,122,1,True
+M021,tinydb/queries.py,88,comparison,is not,is,119,17,True
+M022,tinydb/queries.py,110,comparison,==,!=,8,2,True
+M023,tinydb/queries.py,112,constant,False,True,1,1,True
+M024,tinydb/queries.py,120,logical,and,or,4,0,False
+M025,tinydb/queries.py,124,logical,and,or,4,3,True
+M026,tinydb/queries.py,130,logical,and,or,2,0,False
+M027,tinydb/queries.py,134,logical,or,and,2,1,True
+M028,tinydb/queries.py,138,negation,not,,1,1,True
+M029,tinydb/queries.py,200,arithmetic,+,-,118,118,True
+M030,tinydb/queries.py,232,negation,not,,120,118,True
+M031,tinydb/queries.py,232,logical,and,or,120,118,True
+M032,tinydb/queries.py,232,negation,not,,120,2,True
+M033,tinydb/queries.py,244,constant,False,True,24,23,True
+M034,tinydb/queries.py,263,comparison,==,!=,99,74,True
+M035,tinydb/queries.py,276,comparison,!=,==,1,1,True
+M036,tinydb/queries.py,289,comparison,<,<=,1,1,True
+M037,tinydb/queries.py,302,comparison,<=,<,1,1,True
+M038,tinydb/queries.py,315,comparison,>,>=,2,1,True
+M039,tinydb/queries.py,328,comparison,>=,>,1,1,True
+M040,tinydb/queries.py,339,constant,True,False,11,8,True
+M041,tinydb/queries.py,353,negation,not,,5,5,True
+M042,tinydb/queries.py,354,constant,False,True,1,1,True
+M043,tinydb/queries.py,356,comparison,is not,is,5,5,True
+M044,tinydb/queries.py,374,negation,not,,2,2,True
+M045,tinydb/queries.py,375,constant,False,True,1,1,True
+M046,tinydb/queries.py,377,comparison,is not,is,2,2,True
+M047,tinydb/queries.py,432,logical,and,or,1,1,True
+M048,tinydb/queries.py,436,logical,and,or,1,1,True
+M049,tinydb/queries.py,436,comparison,in,not in,1,1,True
+M050,tinydb/queries.py,465,logical,and,or,1,1,True
+M051,tinydb/queries.py,469,comparison,in,not in,1,1,True
+M052,tinydb/queries.py,469,logical,and,or,1,1,True
+M053,tinydb/queries.py,485,comparison,in,not in,1,1,True
+M054,tinydb/queries.py,492,logical,or,and,2,2,True
+M055,tinydb/queries.py,492,comparison,!=,==,2,2,True
+M056,tinydb/queries.py,492,comparison,not in,in,2,2,True
+M057,tinydb/queries.py,493,constant,False,True,2,2,True
+M058,tinydb/queries.py,495,constant,True,False,2,2,True
+M059,tinydb/queries.py,500,constant,True,False,2,1,True
+M060,tinydb/queries.py,511,constant,True,False,1,1,True
+M061,tinydb/queries.py,523,arithmetic,+,-,4,4,True
+M062,tinydb/storages.py,27,negation,not,,1,1,True
+M063,tinydb/storages.py,27,logical,and,or,1,1,True
+M064,tinydb/storages.py,108,comparison,not in,in,91,1,True
+M065,tinydb/storages.py,116,comparison,in,not in,91,1,True
+M066,tinydb/storages.py,128,constant,0,1,87,87,True
+M067,tinydb/storages.py,131,negation,not,,87,66,True
+M068,tinydb/storages.py,137,constant,0,1,87,87,True
+M069,tinydb/storages.py,144,constant,0,1,87,87,True
+M070,tinydb/table.py,113,logical,and,or,165,5,True
+M071,tinydb/table.py,113,negation,not,,165,3,True
+M072,tinydb/table.py,148,negation,not,,59,59,True
+M073,tinydb/table.py,165,comparison,in,not in,57,57,True
+M074,tinydb/table.py,192,negation,not,,145,145,True
+M075,tinydb/table.py,197,comparison,in,not in,4,4,True
+M076,tinydb/table.py,218,comparison,is,is not,145,2,True
+M077,tinydb/table.py,222,constant,1,2,2,2,True
+M078,tinydb/table.py,224,constant,1,2,144,20,True
+M079,tinydb/table.py,266,comparison,is not,is,54,54,True
+M080,tinydb/table.py,292,constant,True,False,54,0,False
+M081,tinydb/table.py,361,comparison,is not,is,51,47,True
+M082,tinydb/table.py,365,comparison,is,is not,17,17,True
+M083,tinydb/table.py,371,comparison,is not,is,36,36,True
+M084,tinydb/table.py,383,comparison,in,not in,4,4,True
+M085,tinydb/table.py,386,comparison,is not,is,32,32,True
+M086,tinydb/table.py,417,comparison,is not,is,10,8,True
+M087,tinydb/table.py,419,comparison,is not,is,3,3,True
+M088,tinydb/table.py,421,comparison,is not,is,7,5,True
+M089,tinydb/table.py,423,comparison,is not,is,5,5,True
+M090,tinydb/table.py,458,comparison,is not,is,39,39,True
+M091,tinydb/table.py,473,comparison,in,not in,12,12,True
+M092,tinydb/table.py,483,comparison,is not,is,27,11,True
+M093,tinydb/table.py,601,logical,and,or,4,0,False
+M094,tinydb/table.py,607,comparison,is,is not,4,2,True
+M095,tinydb/table.py,607,logical,and,or,4,4,True
+M096,tinydb/table.py,607,comparison,is,is not,4,4,True
+M097,tinydb/table.py,641,comparison,is not,is,24,24,True
+M098,tinydb/table.py,656,comparison,in,not in,11,11,True
+M099,tinydb/table.py,666,comparison,is not,is,13,13,True
+M100,tinydb/table.py,750,comparison,is not,is,163,121,True
+M101,tinydb/table.py,752,constant,1,2,153,20,True
+M102,tinydb/table.py,752,arithmetic,+,-,153,24,True
+M103,tinydb/table.py,763,negation,not,,56,56,True
+M104,tinydb/table.py,764,constant,1,2,53,16,True
+M105,tinydb/table.py,765,arithmetic,+,-,53,14,True
+M106,tinydb/table.py,765,constant,1,2,53,8,True
+M107,tinydb/table.py,771,arithmetic,+,-,10,9,True
+M108,tinydb/table.py,771,constant,1,2,10,7,True
+M109,tinydb/table.py,775,constant,1,2,10,0,False
+M110,tinydb/table.py,775,arithmetic,+,-,10,1,True
+M111,tinydb/table.py,791,comparison,is,is not,149,113,True
+M112,tinydb/table.py,820,comparison,is,is not,163,91,True
+M113,tinydb/utils.py,76,comparison,in,not in,6,6,True
+M114,tinydb/utils.py,86,comparison,is,is not,4,4,True
+M115,tinydb/utils.py,89,constant,True,False,4,2,True
+M116,tinydb/utils.py,99,comparison,is not,is,56,56,True
+M117,tinydb/utils.py,100,constant,True,False,12,1,True
+M118,tinydb/utils.py,107,comparison,in,not in,61,9,True
+M119,tinydb/utils.py,109,constant,True,False,3,1,True
+M120,tinydb/utils.py,116,comparison,>,>=,61,5,True
+M121,tinydb/utils.py,116,comparison,is not,is,61,11,True
+M122,tinydb/utils.py,116,logical,and,or,61,20,True
+M123,tinydb/utils.py,117,constant,False,True,11,5,True

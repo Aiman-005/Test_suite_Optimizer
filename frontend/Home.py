@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 from frontend.components.theme import load_css
 import pandas as pd
 import plotly.express as px
@@ -211,7 +211,7 @@ for column, project in zip(columns, projects):
 
 st.markdown("")
 st.caption(
-    "TEST SUITE OPTIMIZER Â· Benchmark overview Â· Data from combined_benchmark.csv"
+    "TEST SUITE OPTIMIZER · Benchmark overview · Data from combined_benchmark.csv"
 )
 
 

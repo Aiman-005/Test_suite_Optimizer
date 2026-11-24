@@ -23,8 +23,12 @@ def load_duration_estimates(csv_path):
         reader = csv.DictReader(file)
 
         for row in reader:
-            node_id = row["test_node_id"]
-            duration = float(row["kalman_estimate_seconds"])
+            # Accept both the current and the older column names.
+            node_id = row.get("test_node_id") or row.get("node_id")
+            duration = float(
+                row.get("kalman_estimate_seconds")
+                or row.get("estimated_duration")
+            )
 
             if duration > 0:
                 estimates[node_id] = duration

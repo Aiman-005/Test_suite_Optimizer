@@ -381,6 +381,7 @@ display_columns = [
     "selected_tests",
     "selected_execution_time",
     "coverage_percentage",
+    "mutants_caught_percentage",
     "feasible",
     "optimizer_runtime_seconds",
     "budget_seconds",
@@ -400,6 +401,7 @@ display_df = display_df.rename(
         "selected_tests": "Selected Tests",
         "selected_execution_time": "Execution Time (s)",
         "coverage_percentage": "Coverage (%)",
+        "mutants_caught_percentage": "Bugs Caught (%)",
         "feasible": "Feasible",
         "optimizer_runtime_seconds": "Optimizer Runtime (s)",
         "budget_seconds": "Budget (s)",
@@ -421,6 +423,10 @@ st.dataframe(
         ),
         "Coverage (%)": st.column_config.NumberColumn(
             "Coverage (%)",
+            format="%.2f%%",
+        ),
+        "Bugs Caught (%)": st.column_config.NumberColumn(
+            "Bugs Caught (%)",
             format="%.2f%%",
         ),
         "Optimizer Runtime (s)": st.column_config.NumberColumn(
@@ -447,3 +453,177 @@ st.download_button(
 st.caption(
     "Results are based on the recorded benchmark experiments for TinyDB, Toolz, and Boltons."
 )
+
+
+# COMPARE AT A CHOSEN TIME BUDGET
+# Uses the pre-collected budget sweep from run_experiments.py
+# (7 budgets x 30 seeds); no tests are run here.
+
+SWEEP_FILE = ROOT / "results" / "budget_sweep.csv"
+
+
+@st.cache_data
+def load_budget_sweep():
+    if not SWEEP_FILE.exists():
+        return pd.DataFrame()
+    return pd.read_csv(SWEEP_FILE)
+
+
+st.divider()
+st.markdown("### Compare Methods at a Time Budget")
+st.caption(
+    "Pick a project and a time budget (as a share of the full suite's run time). "
+    "Values are means over 30 seeds from the pre-collected experiment; "
+    "greedy is deterministic. Bugs Caught = share of the seeded bugs (mutants) "
+    "that the full suite catches and the selected tests still catch."
+)
+
+sweep = load_budget_sweep()
+
+if sweep.empty:
+    st.info("Budget sweep not found. Run `python run_experiments.py` to create it.")
+else:
+    budget_col1, budget_col2 = st.columns(2)
+
+    with budget_col1:
+        sweep_project = st.selectbox(
+            "Project",
+            sorted(sweep["project"].unique().tolist()),
+            key="sweep_project",
+        )
+
+    budget_options = sorted(sweep["budget_fraction"].unique().tolist())
+
+    with budget_col2:
+        sweep_budget = st.select_slider(
+            "Time budget",
+            options=budget_options,
+            value=0.05 if 0.05 in budget_options else budget_options[0],
+            format_func=lambda b: f"{b:.0%}",
+            key="sweep_budget",
+        )
+
+    # Full-suite time: the main benchmark uses a 50% budget.
+    full_suite_seconds = (
+        df.loc[df["project"] == sweep_project, "budget_seconds"].iloc[0] / 0.5
+        if (df["project"] == sweep_project).any() else None
+    )
+
+    at_budget = (
+        sweep[
+            (sweep["project"] == sweep_project)
+            & (sweep["budget_fraction"] == sweep_budget)
+        ]
+        .groupby("optimizer")
+        .agg(
+            mean_coverage=("coverage_percentage", "mean"),
+            std_coverage=("coverage_percentage", "std"),
+            best_coverage=("coverage_percentage", "max"),
+            bugs_caught=("mutants_caught_percentage", "mean"),
+            tests_selected=("selected_tests", "mean"),
+            time_used=("selected_execution_time", "mean"),
+            runtime=("optimizer_runtime_seconds", "mean"),
+            runs=("seed", "count"),
+        )
+        .reset_index()
+        .sort_values("mean_coverage", ascending=False)
+    )
+    at_budget["std_coverage"] = at_budget["std_coverage"].fillna(0.0)
+
+    if full_suite_seconds:
+        at_budget["time_saved"] = (
+            100 * (1 - at_budget["time_used"] / full_suite_seconds)
+        )
+
+    best_row = at_budget.iloc[0]
+    greedy_row = at_budget[at_budget["optimizer"] == "Greedy"]
+
+    m1, m2, m3 = st.columns(3)
+    m1.metric("Best method", best_row["optimizer"])
+    m2.metric("Best mean coverage", f'{best_row["mean_coverage"]:.2f}%')
+    if not greedy_row.empty:
+        m3.metric(
+            "Gain over greedy",
+            f'{best_row["mean_coverage"] - greedy_row["mean_coverage"].iloc[0]:+.2f} pts',
+        )
+
+    budget_fig = px.bar(
+        at_budget,
+        x="optimizer",
+        y="mean_coverage",
+        error_y="std_coverage",
+        color="optimizer",
+        text_auto=".2f",
+        labels={"optimizer": "Optimizer", "mean_coverage": "Mean coverage (%)"},
+    )
+    budget_fig.update_layout(height=400, showlegend=False)
+    budget_fig.update_yaxes(range=[0, 105], ticksuffix="%")
+    apply_chart_theme(budget_fig)
+    st.plotly_chart(
+        budget_fig,
+        width="stretch",
+        config={"displaylogo": False, "responsive": True},
+    )
+
+    table = at_budget.rename(columns={
+        "optimizer": "Optimizer",
+        "mean_coverage": "Mean Coverage (%)",
+        "std_coverage": "Std Dev (pts)",
+        "best_coverage": "Best Coverage (%)",
+        "bugs_caught": "Bugs Caught (%)",
+        "tests_selected": "Tests Selected",
+        "time_used": "Time Used (s)",
+        "time_saved": "Time Saved vs Full Suite (%)",
+        "runtime": "Optimizer Runtime (s)",
+        "runs": "Runs",
+    })
+    st.dataframe(
+        table,
+        hide_index=True,
+        width="stretch",
+        column_config={
+            "Mean Coverage (%)": st.column_config.NumberColumn(format="%.2f"),
+            "Std Dev (pts)": st.column_config.NumberColumn(format="%.2f"),
+            "Best Coverage (%)": st.column_config.NumberColumn(format="%.2f"),
+            "Bugs Caught (%)": st.column_config.NumberColumn(format="%.2f"),
+            "Tests Selected": st.column_config.NumberColumn(format="%.1f"),
+            "Time Used (s)": st.column_config.NumberColumn(format="%.4f"),
+            "Time Saved vs Full Suite (%)": st.column_config.NumberColumn(format="%.1f"),
+            "Optimizer Runtime (s)": st.column_config.NumberColumn(format="%.3f"),
+        },
+    )
+
+    st.markdown("#### Coverage Across All Budgets")
+    curve = (
+        sweep[sweep["project"] == sweep_project]
+        .groupby(["budget_fraction", "optimizer"])["coverage_percentage"]
+        .mean()
+        .reset_index()
+    )
+    curve["budget_percent"] = curve["budget_fraction"] * 100
+
+    curve_fig = px.line(
+        curve,
+        x="budget_percent",
+        y="coverage_percentage",
+        color="optimizer",
+        markers=True,
+        log_x=True,
+        labels={
+            "budget_percent": "Time budget (% of full suite, log scale)",
+            "coverage_percentage": "Mean coverage (%)",
+            "optimizer": "Optimizer",
+        },
+    )
+    curve_fig.add_vline(
+        x=sweep_budget * 100, line_dash="dot", line_color="gray",
+        annotation_text="selected budget",
+    )
+    curve_fig.update_layout(height=420)
+    curve_fig.update_yaxes(ticksuffix="%")
+    apply_chart_theme(curve_fig)
+    st.plotly_chart(
+        curve_fig,
+        width="stretch",
+        config={"displaylogo": False, "responsive": True},
+    )

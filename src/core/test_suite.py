@@ -14,6 +14,7 @@ class TestSuite:
         self.tests = tests
         self.durations = durations
         self.coverage = coverage
+        self._test_set = set(tests)
 
         self._validate_data()
 
@@ -44,7 +45,7 @@ class TestSuite:
         covered_lines = set()
 
         for test in selected_tests:
-            if test not in self.tests:
+            if test not in self._test_set:
                 raise ValueError(f"Unknown test: {test}")
 
             covered_lines.update(self.coverage[test])
@@ -57,7 +58,7 @@ class TestSuite:
         total_time = 0
 
         for test in selected_tests:
-            if test not in self.tests:
+            if test not in self._test_set:
                 raise ValueError(f"Unknown test: {test}")
 
             total_time += self.durations[test]

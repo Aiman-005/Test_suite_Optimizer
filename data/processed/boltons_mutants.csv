@@ -1,0 +1,151 @@
+mutant_id,file,line,operator,original,replacement,tests_run,tests_killing,detected
+M000,boltons/cacheutils.py,121,constant,0,1,23,2,True
+M001,boltons/cacheutils.py,458,logical,or,and,4,4,True
+M002,boltons/cacheutils.py,731,constant,1,2,1,1,True
+M003,boltons/cacheutils.py,867,constant,0,1,1,1,True
+M004,boltons/debugutils.py,119,comparison,==,!=,6,0,False
+M005,boltons/dictutils.py,231,negation,not,,3,3,True
+M006,boltons/dictutils.py,246,constant,1,2,1,1,True
+M007,boltons/dictutils.py,351,comparison,is,is not,18,7,True
+M008,boltons/dictutils.py,366,logical,or,and,10,1,True
+M009,boltons/dictutils.py,406,comparison,is,is not,5,3,True
+M010,boltons/dictutils.py,800,constant,0,1,2,2,True
+M011,boltons/dictutils.py,806,comparison,==,!=,3,1,True
+M012,boltons/dictutils.py,810,negation,not,,1,1,True
+M013,boltons/dictutils.py,851,comparison,in,not in,3,3,True
+M014,boltons/dictutils.py,923,comparison,is,is not,4,4,True
+M015,boltons/dictutils.py,961,comparison,not in,in,2,2,True
+M016,boltons/dictutils.py,989,negation,not,,1,1,True
+M017,boltons/ecoutils.py,325,constant,2,3,4,0,False
+M018,boltons/excutils.py,119,constant,1,2,1,0,False
+M019,boltons/fileutils.py,148,constant,0,1,3,2,True
+M020,boltons/fileutils.py,458,logical,and,or,2,0,False
+M021,boltons/fileutils.py,468,comparison,is not,is,2,1,True
+M022,boltons/fileutils.py,535,comparison,is not,is,3,3,True
+M023,boltons/fileutils.py,708,negation,not,,5,5,True
+M024,boltons/fileutils.py,722,constant,1,2,3,3,True
+M025,boltons/funcutils.py,645,constant,False,True,2,1,True
+M026,boltons/funcutils.py,755,constant,False,True,34,19,True
+M027,boltons/funcutils.py,825,comparison,is,is not,20,2,True
+M028,boltons/funcutils.py,831,comparison,in,not in,22,8,True
+M029,boltons/funcutils.py,960,comparison,in,not in,4,4,True
+M030,boltons/funcutils.py,964,negation,not,,4,4,True
+M031,boltons/ioutils.py,271,constant,True,False,3,3,True
+M032,boltons/ioutils.py,353,constant,0,1,1,1,True
+M033,boltons/ioutils.py,490,negation,not,,15,3,True
+M034,boltons/ioutils.py,523,constant,False,True,5,0,False
+M035,boltons/ioutils.py,565,constant,0,1,4,4,True
+M036,boltons/ioutils.py,594,comparison,!=,==,3,3,True
+M037,boltons/iterutils.py,177,comparison,>=,>,1,0,False
+M038,boltons/iterutils.py,180,logical,and,or,1,1,True
+M039,boltons/iterutils.py,180,negation,not,,1,1,True
+M040,boltons/iterutils.py,444,arithmetic,+,-,1,1,True
+M041,boltons/iterutils.py,565,arithmetic,*,//,1,0,False
+M042,boltons/iterutils.py,590,negation,not,,3,3,True
+M043,boltons/iterutils.py,593,arithmetic,*,//,2,0,False
+M044,boltons/iterutils.py,692,comparison,==,!=,6,5,True
+M045,boltons/iterutils.py,698,arithmetic,+,-,5,3,True
+M046,boltons/iterutils.py,709,negation,not,,6,6,True
+M047,boltons/iterutils.py,778,arithmetic,+,-,1,1,True
+M048,boltons/iterutils.py,789,constant,0,1,1,1,True
+M049,boltons/iterutils.py,841,negation,not,,2,2,True
+M050,boltons/iterutils.py,1107,constant,False,True,10,10,True
+M051,boltons/iterutils.py,1272,constant,True,False,22,1,True
+M052,boltons/iterutils.py,1280,comparison,in,not in,22,0,False
+M053,boltons/iterutils.py,1280,comparison,in,not in,22,0,False
+M054,boltons/iterutils.py,1681,comparison,<,<=,1,0,False
+M055,boltons/jsonutils.py,95,constant,0,1,6,2,True
+M056,boltons/listutils.py,133,constant,True,False,8,0,False
+M057,boltons/listutils.py,168,comparison,>,>=,1,0,False
+M058,boltons/listutils.py,187,comparison,<,<=,2,0,False
+M059,boltons/listutils.py,342,negation,not,,1,1,True
+M060,boltons/mathutils.py,141,comparison,is not,is,5,3,True
+M061,boltons/mathutils.py,164,comparison,<,<=,5,2,True
+M062,boltons/mathutils.py,175,constant,0,1,1,1,True
+M063,boltons/mathutils.py,179,arithmetic,-,+,1,1,True
+M064,boltons/namedutils.py,190,constant,1,2,2,0,False
+M065,boltons/namedutils.py,323,comparison,in,not in,1,1,True
+M066,boltons/namedutils.py,324,arithmetic,%,//,1,1,True
+M067,boltons/pathutils.py,117,constant,1,2,1,1,True
+M068,boltons/pathutils.py,159,arithmetic,+,-,1,1,True
+M069,boltons/queueutils.py,216,constant,0,1,1,1,True
+M070,boltons/setutils.py,161,constant,0,1,9,5,True
+M071,boltons/setutils.py,169,comparison,<,<=,5,3,True
+M072,boltons/setutils.py,190,comparison,is,is not,10,7,True
+M073,boltons/setutils.py,333,comparison,in,not in,2,2,True
+M074,boltons/setutils.py,440,comparison,<,<=,3,1,True
+M075,boltons/setutils.py,590,comparison,is,is not,9,9,True
+M076,boltons/setutils.py,626,comparison,is,is not,9,9,True
+M077,boltons/setutils.py,644,comparison,is,is not,9,9,True
+M078,boltons/setutils.py,645,comparison,is,is not,9,9,True
+M079,boltons/setutils.py,655,negation,not,,9,9,True
+M080,boltons/setutils.py,666,comparison,is,is not,1,1,True
+M081,boltons/setutils.py,686,comparison,is,is not,3,3,True
+M082,boltons/setutils.py,732,arithmetic,-,+,1,1,True
+M083,boltons/setutils.py,804,comparison,is,is not,3,3,True
+M084,boltons/setutils.py,894,comparison,is,is not,1,1,True
+M085,boltons/setutils.py,952,comparison,is,is not,2,2,True
+M086,boltons/setutils.py,984,comparison,==,!=,1,1,True
+M087,boltons/socketutils.py,317,comparison,is,is not,7,3,True
+M088,boltons/socketutils.py,344,comparison,<=,<,7,0,False
+M089,boltons/socketutils.py,354,constant,1,2,7,1,True
+M090,boltons/socketutils.py,454,constant,0,1,4,4,True
+M091,boltons/socketutils.py,457,constant,0,1,4,4,True
+M092,boltons/socketutils.py,457,constant,0,1,4,4,True
+M093,boltons/socketutils.py,659,arithmetic,+,-,3,0,False
+M094,boltons/statsutils.py,188,constant,0,1,9,1,True
+M095,boltons/statsutils.py,457,arithmetic,*,//,2,1,True
+M096,boltons/statsutils.py,479,constant,4,5,1,0,False
+M097,boltons/statsutils.py,566,negation,not,,3,3,True
+M098,boltons/statsutils.py,588,arithmetic,*,//,1,1,True
+M099,boltons/statsutils.py,638,constant,1,2,3,3,True
+M100,boltons/strutils.py,259,comparison,not in,in,2,0,False
+M101,boltons/strutils.py,271,comparison,==,!=,3,2,True
+M102,boltons/strutils.py,411,comparison,!=,==,2,2,True
+M103,boltons/strutils.py,481,comparison,==,!=,1,0,False
+M104,boltons/strutils.py,578,arithmetic,/,*,1,1,True
+M105,boltons/strutils.py,855,logical,or,and,1,1,True
+M106,boltons/strutils.py,974,constant,0,1,1,1,True
+M107,boltons/strutils.py,977,comparison,==,!=,1,1,True
+M108,boltons/strutils.py,1397,constant,1,2,1,0,False
+M109,boltons/strutils.py,1404,negation,not,,1,1,True
+M110,boltons/strutils.py,1406,arithmetic,+,-,1,1,True
+M111,boltons/tableutils.py,510,comparison,>,>=,1,0,False
+M112,boltons/tableutils.py,515,arithmetic,+,-,1,1,True
+M113,boltons/tbutils.py,306,comparison,<,<=,2,0,False
+M114,boltons/tbutils.py,397,comparison,not in,in,2,1,True
+M115,boltons/tbutils.py,485,arithmetic,+,-,1,0,False
+M116,boltons/tbutils.py,523,arithmetic,-,+,1,0,False
+M117,boltons/tbutils.py,537,constant,0,1,1,0,False
+M118,boltons/tbutils.py,761,negation,not,,6,6,True
+M119,boltons/tbutils.py,794,arithmetic,+,-,6,5,True
+M120,boltons/tbutils.py,826,constant,1,2,3,2,True
+M121,boltons/tbutils.py,834,constant,1,2,1,1,True
+M122,boltons/timeutils.py,94,arithmetic,-,+,1,1,True
+M123,boltons/timeutils.py,146,constant,1,2,1,1,True
+M124,boltons/timeutils.py,146,constant,0,1,1,1,True
+M125,boltons/timeutils.py,219,negation,not,,1,1,True
+M126,boltons/timeutils.py,267,comparison,is,is not,1,1,True
+M127,boltons/timeutils.py,275,constant,1,2,1,1,True
+M128,boltons/timeutils.py,419,arithmetic,-,+,5,5,True
+M129,boltons/timeutils.py,604,comparison,>,>=,2,0,False
+M130,boltons/timeutils.py,622,comparison,is,is not,2,2,True
+M131,boltons/timeutils.py,642,comparison,is not,is,1,1,True
+M132,boltons/typeutils.py,89,constant,False,True,1,1,True
+M133,boltons/urlutils.py,175,constant,1,2,2,1,True
+M134,boltons/urlutils.py,325,constant,2,3,19,0,False
+M135,boltons/urlutils.py,359,constant,True,False,1,1,True
+M136,boltons/urlutils.py,391,constant,1,2,12,1,True
+M137,boltons/urlutils.py,412,comparison,is,is not,93,0,False
+M138,boltons/urlutils.py,502,logical,or,and,95,0,False
+M139,boltons/urlutils.py,614,comparison,in,not in,14,0,False
+M140,boltons/urlutils.py,618,comparison,in,not in,3,2,True
+M141,boltons/urlutils.py,686,constant,1,2,9,5,True
+M142,boltons/urlutils.py,700,logical,or,and,9,0,False
+M143,boltons/urlutils.py,738,comparison,==,!=,50,48,True
+M144,boltons/urlutils.py,746,comparison,!=,==,50,6,True
+M145,boltons/urlutils.py,746,logical,and,or,50,43,True
+M146,boltons/urlutils.py,786,logical,and,or,49,45,True
+M147,boltons/urlutils.py,811,comparison,==,!=,6,5,True
+M148,boltons/urlutils.py,812,constant,False,True,2,2,True
+M149,boltons/urlutils.py,933,arithmetic,+,-,8,8,True

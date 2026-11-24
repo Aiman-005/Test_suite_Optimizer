@@ -1,0 +1,151 @@
+mutant_id,file,line,operator,original,replacement,tests_run,tests_killing,detected
+M000,tlz/_build_tlz.py,29,negation,not,,1,1,True
+M001,tlz/_build_tlz.py,61,comparison,is not,is,1,1,True
+M002,tlz/_build_tlz.py,83,comparison,==,!=,1,1,True
+M003,toolz/_signatures.py,135,constant,0,1,1,0,False
+M004,toolz/_signatures.py,255,constant,1,2,1,0,False
+M005,toolz/_signatures.py,610,comparison,==,!=,1,0,False
+M006,toolz/_signatures.py,645,constant,3,4,1,0,False
+M007,toolz/_signatures.py,645,comparison,==,!=,1,0,False
+M008,toolz/_signatures.py,658,arithmetic,+,-,1,0,False
+M009,toolz/_signatures.py,677,comparison,<,<=,2,1,True
+M010,toolz/_signatures.py,692,comparison,not in,in,3,2,True
+M011,toolz/_signatures.py,703,arithmetic,+,-,3,3,True
+M012,toolz/_signatures.py,721,logical,or,and,2,0,False
+M013,toolz/_signatures.py,721,comparison,>,>=,2,2,True
+M014,toolz/_signatures.py,732,constant,True,False,1,1,True
+M015,toolz/_signatures.py,752,constant,False,True,1,0,False
+M016,toolz/_signatures.py,780,comparison,not in,in,4,2,True
+M017,toolz/_signatures.py,785,comparison,==,!=,3,1,True
+M018,toolz/compatibility.py,11,constant,0,1,1,0,False
+M019,toolz/compatibility.py,11,comparison,>,>=,1,0,False
+M020,toolz/compatibility.py,11,constant,2,3,1,0,False
+M021,toolz/compatibility.py,12,comparison,==,!=,1,0,False
+M022,toolz/compatibility.py,12,constant,4,5,1,0,False
+M023,toolz/compatibility.py,12,constant,1,2,1,0,False
+M024,toolz/compatibility.py,13,logical,and,or,1,0,False
+M025,toolz/curried/operator.py,13,comparison,in,not in,1,0,False
+M026,toolz/dicttoolz.py,33,constant,0,1,14,6,True
+M027,toolz/dicttoolz.py,33,constant,1,2,14,4,True
+M028,toolz/dicttoolz.py,34,constant,0,1,3,3,True
+M029,toolz/dicttoolz.py,58,constant,0,1,9,5,True
+M030,toolz/dicttoolz.py,59,constant,0,1,4,4,True
+M031,toolz/dicttoolz.py,217,comparison,<,<=,4,0,False
+M032,toolz/dicttoolz.py,217,arithmetic,*,//,4,0,False
+M033,toolz/dicttoolz.py,220,comparison,in,not in,4,4,True
+M034,toolz/functoolz.py,41,negation,not,,1,1,True
+M035,toolz/functoolz.py,43,constant,1,2,1,1,True
+M036,toolz/functoolz.py,115,arithmetic,+,-,1,1,True
+M037,toolz/functoolz.py,198,negation,not,,40,0,False
+M038,toolz/functoolz.py,239,logical,or,and,7,2,True
+M039,toolz/functoolz.py,244,constant,0,1,7,3,True
+M040,toolz/functoolz.py,246,comparison,==,!=,2,2,True
+M041,toolz/functoolz.py,248,constant,1,2,2,2,True
+M042,toolz/functoolz.py,250,constant,False,True,7,3,True
+M043,toolz/functoolz.py,260,comparison,in,not in,7,6,True
+M044,toolz/functoolz.py,297,logical,and,or,3,1,True
+M045,toolz/functoolz.py,301,negation,not,,1,1,True
+M046,toolz/functoolz.py,316,comparison,is,is not,25,1,True
+M047,toolz/functoolz.py,318,constant,False,True,23,2,True
+M048,toolz/functoolz.py,322,comparison,is,is not,25,25,True
+M049,toolz/functoolz.py,329,constant,True,False,8,8,True
+M050,toolz/functoolz.py,363,comparison,is,is not,5,3,True
+M051,toolz/functoolz.py,366,logical,and,or,5,2,True
+M052,toolz/functoolz.py,366,comparison,is,is not,5,3,True
+M053,toolz/functoolz.py,373,comparison,not in,in,5,3,True
+M054,toolz/functoolz.py,388,logical,or,and,3,0,False
+M055,toolz/functoolz.py,436,constant,1,2,10,2,True
+M056,toolz/functoolz.py,441,comparison,is,is not,10,8,True
+M057,toolz/functoolz.py,444,constant,0,1,2,2,True
+M058,toolz/functoolz.py,487,comparison,is,is not,2,1,True
+M059,toolz/functoolz.py,501,constant,1,2,8,6,True
+M060,toolz/functoolz.py,546,arithmetic,+,-,1,1,True
+M061,toolz/functoolz.py,550,logical,and,or,1,0,False
+M062,toolz/functoolz.py,550,comparison,==,!=,1,1,True
+M063,toolz/functoolz.py,555,comparison,is,is not,1,1,True
+M064,toolz/functoolz.py,555,negation,not,,1,1,True
+M065,toolz/functoolz.py,565,comparison,is,is not,1,1,True
+M066,toolz/functoolz.py,598,comparison,!=,==,2,0,False
+M067,toolz/functoolz.py,608,negation,not,,1,0,False
+M068,toolz/functoolz.py,613,comparison,is not,is,2,1,True
+M069,toolz/functoolz.py,620,constant,1,2,2,1,True
+M070,toolz/functoolz.py,640,comparison,in,not in,2,0,False
+M071,toolz/functoolz.py,670,negation,not,,8,6,True
+M072,toolz/functoolz.py,672,comparison,==,!=,8,5,True
+M073,toolz/functoolz.py,672,constant,1,2,8,5,True
+M074,toolz/functoolz.py,759,logical,and,or,2,0,False
+M075,toolz/functoolz.py,759,constant,1,2,2,1,True
+M076,toolz/functoolz.py,759,comparison,==,!=,2,1,True
+M077,toolz/functoolz.py,918,comparison,is,is not,50,20,True
+M078,toolz/functoolz.py,925,negation,not,,50,44,True
+M079,toolz/functoolz.py,963,constant,1,2,18,9,True
+M080,toolz/functoolz.py,964,comparison,is,is not,17,10,True
+M081,toolz/functoolz.py,965,comparison,in,not in,16,10,True
+M082,toolz/functoolz.py,970,comparison,is,is not,32,10,True
+M083,toolz/functoolz.py,978,comparison,is,is not,16,8,True
+M084,toolz/functoolz.py,993,constant,False,True,23,22,True
+M085,toolz/functoolz.py,1034,constant,False,True,2,2,True
+M086,toolz/functoolz.py,1038,comparison,is,is not,5,5,True
+M087,toolz/functoolz.py,1040,constant,True,False,5,5,True
+M088,toolz/itertoolz.py,58,comparison,==,!=,2,2,True
+M089,toolz/itertoolz.py,123,constant,0,1,1,1,True
+M090,toolz/itertoolz.py,125,comparison,==,!=,1,1,True
+M091,toolz/itertoolz.py,129,comparison,is,is not,1,1,True
+M092,toolz/itertoolz.py,136,arithmetic,//,*,1,1,True
+M093,toolz/itertoolz.py,138,constant,1,2,1,1,True
+M094,toolz/itertoolz.py,138,comparison,==,!=,1,1,True
+M095,toolz/itertoolz.py,139,constant,0,1,1,1,True
+M096,toolz/itertoolz.py,143,comparison,==,!=,1,1,True
+M097,toolz/itertoolz.py,158,comparison,<,<=,1,0,False
+M098,toolz/itertoolz.py,176,arithmetic,//,*,1,1,True
+M099,toolz/itertoolz.py,179,constant,0,1,1,1,True
+M100,toolz/itertoolz.py,183,comparison,==,!=,1,1,True
+M101,toolz/itertoolz.py,184,constant,0,1,1,1,True
+M102,toolz/itertoolz.py,282,constant,True,False,1,1,True
+M103,toolz/itertoolz.py,305,constant,False,True,1,1,True
+M104,toolz/itertoolz.py,307,constant,True,False,1,1,True
+M105,toolz/itertoolz.py,360,constant,0,1,1,1,True
+M106,toolz/itertoolz.py,401,constant,0,1,1,1,True
+M107,toolz/itertoolz.py,451,comparison,==,!=,1,1,True
+M108,toolz/itertoolz.py,452,comparison,>,>=,1,1,True
+M109,toolz/itertoolz.py,455,constant,0,1,1,1,True
+M110,toolz/itertoolz.py,460,comparison,!=,==,1,1,True
+M111,toolz/itertoolz.py,548,constant,1,2,2,2,True
+M112,toolz/itertoolz.py,613,comparison,==,!=,3,3,True
+M113,toolz/itertoolz.py,614,negation,not,,3,1,True
+M114,toolz/itertoolz.py,622,comparison,not in,in,3,3,True
+M115,toolz/itertoolz.py,675,constant,0,1,2,2,True
+M116,toolz/itertoolz.py,675,logical,or,and,2,1,True
+M117,toolz/itertoolz.py,700,arithmetic,*,//,1,1,True
+M118,toolz/itertoolz.py,721,arithmetic,*,//,2,2,True
+M119,toolz/itertoolz.py,730,constant,1,2,2,2,True
+M120,toolz/itertoolz.py,734,arithmetic,%,//,2,2,True
+M121,toolz/itertoolz.py,735,constant,1,2,2,2,True
+M122,toolz/itertoolz.py,735,logical,or,and,2,1,True
+M123,toolz/itertoolz.py,748,comparison,is,is not,1,1,True
+M124,toolz/itertoolz.py,751,arithmetic,+,-,1,1,True
+M125,toolz/itertoolz.py,751,constant,1,2,1,1,True
+M126,toolz/itertoolz.py,795,comparison,==,!=,3,1,True
+M127,toolz/itertoolz.py,806,constant,1,2,5,3,True
+M128,toolz/itertoolz.py,806,comparison,==,!=,5,3,True
+M129,toolz/itertoolz.py,807,constant,0,1,4,4,True
+M130,toolz/itertoolz.py,877,negation,not,,7,7,True
+M131,toolz/itertoolz.py,891,comparison,!=,==,3,1,True
+M132,toolz/itertoolz.py,891,logical,and,or,3,1,True
+M133,toolz/itertoolz.py,895,comparison,in,not in,1,1,True
+M134,toolz/itertoolz.py,909,comparison,in,not in,1,1,True
+M135,toolz/itertoolz.py,947,constant,0,1,1,1,True
+M136,toolz/itertoolz.py,947,constant,1,2,1,1,True
+M137,toolz/itertoolz.py,948,constant,0,1,1,1,True
+M138,toolz/itertoolz.py,950,comparison,<,<=,1,1,True
+M139,toolz/itertoolz.py,953,comparison,==,!=,1,1,True
+M140,toolz/itertoolz.py,965,comparison,!=,==,1,0,False
+M141,toolz/itertoolz.py,985,logical,and,or,2,2,True
+M142,toolz/itertoolz.py,985,comparison,is not,is,2,1,True
+M143,toolz/itertoolz.py,985,negation,not,,2,2,True
+M144,toolz/recipes.py,21,negation,not,,1,1,True
+M145,toolz/sandbox/core.py,74,comparison,==,!=,3,2,True
+M146,toolz/sandbox/core.py,85,constant,False,True,1,1,True
+M147,toolz/sandbox/parallel.py,61,constant,1,2,1,1,True
+M148,toolz/sandbox/parallel.py,63,comparison,is,is not,1,1,True
+M149,toolz/utils.py,6,constant,True,False,26,25,True

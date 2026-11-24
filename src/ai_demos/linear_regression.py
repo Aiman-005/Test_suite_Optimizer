@@ -1,139 +1,127 @@
+"""
+Supervised learning: predict a test's future duration with linear regression.
+
+Task:     regression. One sample per test.
+Features: statistics of the test's first five timing runs
+          (historical_mean, historical_min, historical_max, historical_std).
+Target:   the mean of the same test's runs 6-10 ("future duration").
+
+Evaluation: 5-fold cross-validation over all tests of a project, so every
+test is predicted once by a model that never saw it. The model is
+compared with two baselines that need no training:
+- historical mean: predict the mean of runs 1-5
+- Kalman filter:   the project's own KalmanDurationEstimator on runs 1-5
+Metrics: MAE and RMSE (milliseconds) and R^2.
+
+    python -m src.ai_demos.linear_regression
+"""
+
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from pathlib import Path
-
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import KFold, cross_val_predict
 
+from src.core.kalman_filter import KalmanDurationEstimator
 
 PROJECTS = ["tinydb", "toolz", "boltons"]
-
-FEATURES = [
-    "historical_mean",
-    "historical_min",
-    "historical_max",
-    "historical_std"
-]
+FEATURES = ["historical_mean", "historical_min", "historical_max", "historical_std"]
+DATA_DIR = Path("data/processed")
+OUTPUT_DIR = Path("results/ml")
 
 
 def prepare_dataset(project):
-    """Build historical features and future execution-time targets."""
+    """Build one row per test: features from runs 1-5, target from runs 6-10."""
 
-    path = Path(f"data/processed/{project}_timing_runs.csv")
-    data = pd.read_csv(path)
+    data = pd.read_csv(DATA_DIR / f"{project}_timing_runs.csv")
+    data = data[data["status"] == "passed"]
 
-    # Exclude skipped or failed measurements.
-    data = data[data["status"] == "passed"].copy()
+    runs = data.pivot_table(
+        index="node_id", columns="run_number", values="duration_seconds"
+    ).dropna()
 
-    # Use runs 1-5 as historical measurements.
-    historical = data[data["run_number"] <= 5]
+    history = runs[[1, 2, 3, 4, 5]]
 
-    features = (
-        historical.groupby("node_id")["duration_seconds"]
-        .agg(["mean", "min", "max", "std"])
-        .reset_index()
-    )
+    dataset = pd.DataFrame({
+        "node_id": runs.index,
+        "historical_mean": history.mean(axis=1).values,
+        "historical_min": history.min(axis=1).values,
+        "historical_max": history.max(axis=1).values,
+        "historical_std": history.std(axis=1).values,
+        "kalman_estimate": [
+            KalmanDurationEstimator().estimate_duration(list(values))
+            for values in history.values
+        ],
+        "actual_duration": runs[[6, 7, 8, 9, 10]].mean(axis=1).values,
+    })
 
-    features.columns = [
-        "node_id",
-        "historical_mean",
-        "historical_min",
-        "historical_max",
-        "historical_std"
-    ]
+    return dataset
 
-    # Use runs 6-10 as the actual future duration.
-    future = (
-        data[data["run_number"] >= 6]
-        .groupby("node_id")["duration_seconds"]
-        .mean()
-        .reset_index()
-    )
 
-    future.columns = ["node_id", "actual_duration"]
-
-    # Match historical features with future targets.
-    dataset = features.merge(future, on="node_id", how="inner")
-
-    return dataset.dropna()
+def score(project, model_name, actual, predicted):
+    return {
+        "project": project,
+        "model": model_name,
+        "samples": len(actual),
+        "mae_ms": mean_absolute_error(actual, predicted) * 1000,
+        "rmse_ms": np.sqrt(mean_squared_error(actual, predicted)) * 1000,
+        "r2": r2_score(actual, predicted),
+    }
 
 
 def run_linear_regression():
-    """Train and evaluate a duration prediction model for each project."""
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    output_dir = Path("results/ml")
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    all_predictions = []
-    all_metrics = []
+    metrics, predictions, coefficients = [], [], []
 
     for project in PROJECTS:
         dataset = prepare_dataset(project)
-
         X = dataset[FEATURES]
         y = dataset["actual_duration"]
 
-        X_train, X_test, y_train, y_test = train_test_split(
-            X,
-            y,
-            test_size=0.2,
-            random_state=42
-        )
+        folds = KFold(n_splits=5, shuffle=True, random_state=42)
+        predicted = cross_val_predict(LinearRegression(), X, y, cv=folds)
 
-        model = LinearRegression()
-        model.fit(X_train, y_train)
+        metrics += [
+            score(project, "Linear regression (5-fold CV)", y, predicted),
+            score(project, "Baseline: historical mean", y, dataset["historical_mean"]),
+            score(project, "Baseline: Kalman filter", y, dataset["kalman_estimate"]),
+        ]
 
-        predictions = model.predict(X_test)
+        final_model = LinearRegression().fit(X, y)
+        coefficients.append({
+            "project": project,
+            "intercept_ms": final_model.intercept_ * 1000,
+            **{f"coef_{name}": value for name, value in zip(FEATURES, final_model.coef_)},
+        })
 
-        mae = mean_absolute_error(y_test, predictions)
-        rmse = np.sqrt(mean_squared_error(y_test, predictions))
-        r2 = r2_score(y_test, predictions)
-
-        print(f"\n{project.upper()} LINEAR REGRESSION")
-        print("-" * 40)
-        print(f"Total samples: {len(dataset)}")
-        print(f"Training samples: {len(X_train)}")
-        print(f"Testing samples: {len(X_test)}")
-        print(f"MAE:  {mae:.8f} seconds")
-        print(f"RMSE: {rmse:.8f} seconds")
-        print(f"R²:   {r2:.4f}")
-
-        for node_id, actual, predicted in zip(
-            dataset.loc[X_test.index, "node_id"],
-            y_test,
-            predictions
+        for node_id, actual, pred, mean in zip(
+            dataset["node_id"], y, predicted, dataset["historical_mean"]
         ):
-            all_predictions.append({
+            predictions.append({
                 "project": project,
                 "node_id": node_id,
                 "actual_duration": actual,
-                "predicted_duration": predicted,
-                "absolute_error": abs(actual - predicted)
+                "predicted_duration": pred,
+                "historical_mean": mean,
+                "absolute_error": abs(actual - pred),
             })
 
-        all_metrics.append({
-            "project": project,
-            "samples": len(dataset),
-            "training_samples": len(X_train),
-            "testing_samples": len(X_test),
-            "mae": mae,
-            "rmse": rmse,
-            "r2": r2
-        })
-
-    pd.DataFrame(all_metrics).to_csv(
-        output_dir / "linear_regression_metrics.csv",
-        index=False
+    metrics = pd.DataFrame(metrics)
+    metrics.to_csv(OUTPUT_DIR / "linear_regression_metrics.csv", index=False)
+    pd.DataFrame(predictions).to_csv(
+        OUTPUT_DIR / "linear_regression_predictions.csv", index=False
+    )
+    pd.DataFrame(coefficients).to_csv(
+        OUTPUT_DIR / "linear_regression_coefficients.csv", index=False
     )
 
-    pd.DataFrame(all_predictions).to_csv(
-        output_dir / "linear_regression_predictions.csv",
-        index=False
-    )
-
-    print("\nResults saved in:", output_dir)
+    print(metrics.round(4).to_string(index=False))
+    print("\nCoefficients of the model fitted on all tests:")
+    print(pd.DataFrame(coefficients).round(4).to_string(index=False))
+    print("\nResults saved in:", OUTPUT_DIR)
 
 
 if __name__ == "__main__":

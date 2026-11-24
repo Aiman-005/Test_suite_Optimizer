@@ -1,11 +1,16 @@
-class GreedyOptimizer:
+from src.algorithms.base import Optimizer
+
+
+class GreedyOptimizer(Optimizer):
     """
     Selects tests based on additional code coverage
     per unit of execution time.
     """
 
+    name = "Greedy"
+
     def __init__(self, problem):
-        self.problem = problem
+        super().__init__(problem)
 
     def optimize(self):
         """Return a greedy test selection within the budget."""

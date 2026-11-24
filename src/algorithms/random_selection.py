@@ -1,14 +1,17 @@
 import random
+from src.algorithms.base import Optimizer
 
 
-class RandomSelectionOptimizer:
+class RandomSelectionOptimizer(Optimizer):
     """
     Selects test cases randomly while respecting
     the available execution-time budget.
     """
 
+    name = "Random Selection"
+
     def __init__(self, problem, seed=None):
-        self.problem = problem
+        super().__init__(problem)
         self.random_generator = random.Random(seed)
 
     def optimize(self):

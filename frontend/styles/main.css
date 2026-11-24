@@ -115,7 +115,7 @@ p, label, span {
 }
 
 .metric-card {
-    min-height: 126px;
+    min-height: 176px;
 }
 
 .metric-card:hover,

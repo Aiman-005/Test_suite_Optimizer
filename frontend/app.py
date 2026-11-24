@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+
+# Make the project root importable when started with "streamlit run frontend/app.py".
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 
 import streamlit as st
 from frontend.components.theme import load_css

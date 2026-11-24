@@ -1,93 +1,108 @@
 import math
 import random
 
+from src.algorithms.greedy import GreedyOptimizer
+from src.algorithms.selection_state import SelectionState
+from src.algorithms.base import Optimizer
 
-class SimulatedAnnealingOptimizer:
-    """
-    Optimizes test selection using simulated annealing.
 
-    Occasionally accepts worse solutions to escape
-    local optima, especially at higher temperatures.
+class SimulatedAnnealingOptimizer(Optimizer):
     """
+    Optimizes test selection using simulated annealing (Lab 06).
+
+    Starts from the greedy solution, proposes add / remove / swap moves,
+    and accepts a worse move with probability exp(delta / T), where
+    delta is the change in the number of covered lines (so T is in
+    "lines"). The temperature cools geometrically:
+    T <- T * cooling_rate after every iteration.
+    """
+
+    name = "Simulated Annealing"
 
     def __init__(
         self,
         problem,
-        initial_temperature=100,
-        cooling_rate=0.95,
-        iterations=1000,
-        seed=None
+        initial_temperature=2.0,
+        cooling_rate=0.9995,
+        iterations=20000,
+        seed=None,
+        greedy_start=True
     ):
-        self.problem = problem
+        super().__init__(problem)
         self.initial_temperature = initial_temperature
         self.cooling_rate = cooling_rate
         self.iterations = iterations
+        self.greedy_start = greedy_start
         self.random_generator = random.Random(seed)
 
-    def _score(self, selected):
-        coverage = self.problem.coverage_score(selected)
-        execution_time = self.problem.suite.time_of(selected)
+        # Best coverage (%) after every iteration (for convergence charts).
+        self.history = []
 
-        return coverage, -execution_time
-
-    def _create_neighbor(self, current):
-        """Create a nearby feasible solution."""
-
+    def _sample_move(self, state):
         tests = self.problem.suite.tests
-        candidate = current.copy()
+        move = self.random_generator.choice(["add", "remove", "swap"])
 
-        if not tests:
-            return candidate
+        if move == "remove" and state.selected:
+            return "remove", self.random_generator.choice(state.selected), None
 
-        test = self.random_generator.choice(tests)
+        # Draw an unselected test by rejection sampling (fast for big suites).
+        new = None
+        if len(state.selected_set) < len(tests):
+            while new is None or new in state.selected_set:
+                new = self.random_generator.choice(tests)
 
-        if test in candidate:
-            candidate.remove(test)
-        else:
-            candidate.append(test)
+        if new is None:
+            return None
 
-        if self.problem.is_feasible(candidate):
-            return candidate
+        if move == "add" or not state.selected:
+            return "add", new, None
 
-        return current.copy()
+        return "swap", self.random_generator.choice(state.selected), new
 
     def optimize(self):
         """Run the simulated annealing optimization process."""
 
-        current = []
-        best_solution = current.copy()
+        self.history = []
+
+        start = (
+            GreedyOptimizer(self.problem).optimize()
+            if self.greedy_start else []
+        )
+        state = SelectionState(self.problem, start)
+
+        best_solution = state.selected.copy()
+        best_score = state.score()
 
         temperature = self.initial_temperature
 
         for _ in range(self.iterations):
 
-            candidate = self._create_neighbor(current)
+            move = self._sample_move(state)
 
-            current_score = self._score(current)
-            candidate_score = self._score(candidate)
+            if move is not None:
+                covered, time = state.evaluate(*move)
 
-            difference = (
-                candidate_score[0] - current_score[0]
-            )
+                if time <= self.problem.budget:
+                    difference = covered - state.covered
 
-            if difference > 0:
-                current = candidate
+                    if difference > 0 or (
+                        difference == 0 and time <= state.time
+                    ):
+                        accept = True
+                    else:
+                        probability = math.exp(
+                            difference / max(temperature, 1e-10)
+                        )
+                        accept = self.random_generator.random() < probability
 
-            elif difference == 0:
-                if candidate_score[1] > current_score[1]:
-                    current = candidate
+                    if accept:
+                        state.apply(*move)
 
-            else:
-                probability = math.exp(
-                    difference / max(temperature, 1e-10)
-                )
+                        if state.score() > best_score:
+                            best_solution = state.selected.copy()
+                            best_score = state.score()
 
-                if self.random_generator.random() < probability:
-                    current = candidate
-
-            if self._score(current) > self._score(best_solution):
-                best_solution = current.copy()
-
+            self.history.append(best_score[0])
             temperature *= self.cooling_rate
 
         return best_solution

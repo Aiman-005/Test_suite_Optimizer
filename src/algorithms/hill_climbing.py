@@ -1,109 +1,131 @@
 
 import random
 
+from src.algorithms.greedy import GreedyOptimizer
+from src.algorithms.selection_state import SelectionState
+from src.algorithms.base import Optimizer
 
-class HillClimbingOptimizer:
+
+class HillClimbingOptimizer(Optimizer):
     """
-    Randomized-neighborhood Hill Climbing.
-    Samples a limited number of neighbors to handle larger test suites.
+    Hill climbing with random restarts (Lab 06).
+
+    The first climb starts from the greedy solution; every other
+    restart starts from a random feasible selection. Each step samples
+    add / remove / swap neighbours and moves to the best one that
+    improves the score (coverage first, then lower execution time).
+    The climb stops when no sampled neighbour improves (local optimum)
+    or after max_steps.
     """
+
+    name = "Hill Climbing"
 
     def __init__(
-        self, problem, max_restarts=1, max_neighbors=20,
-        max_steps=20, seed=None
+        self, problem, max_restarts=5, max_neighbors=200,
+        max_steps=300, seed=None, greedy_start=True
     ):
-        self.problem = problem
+        super().__init__(problem)
         self.max_restarts = max_restarts
         self.max_neighbors = max_neighbors
         self.max_steps = max_steps
+        self.greedy_start = greedy_start
         self.random_generator = random.Random(seed)
 
-    def _score(self, selected_tests):
-        coverage = self.problem.coverage_score(selected_tests)
-        execution_time = self.problem.suite.time_of(selected_tests)
-        return coverage, -execution_time
+        # Best coverage (%) after every step, across all restarts.
+        self.history = []
 
     def _create_random_solution(self):
         tests = self.problem.suite.tests.copy()
         self.random_generator.shuffle(tests)
 
         selected = []
+        used_time = 0.0
+
         for test in tests:
-            if self.random_generator.choice([True, False]):
-                candidate = selected + [test]
-                if self.problem.is_feasible(candidate):
-                    selected.append(test)
+            duration = self.problem.suite.durations[test]
+
+            if (
+                self.random_generator.choice([True, False])
+                and used_time + duration <= self.problem.budget
+            ):
+                selected.append(test)
+                used_time += duration
 
         return selected
 
-    def _get_neighbors(self, selected):
-        all_tests = self.problem.suite.tests
-        selected_set = set(selected)
-        unselected = [t for t in all_tests if t not in selected_set]
+    def _sample_move(self, state, unselected):
+        move = self.random_generator.choice(["add", "remove", "swap"])
 
-        operations = (
-            [("remove", test, None) for test in selected]
-            + [("add", test, None) for test in unselected]
-            + [
-                ("swap", old, new)
-                for old in selected
-                for new in unselected
-            ]
-        )
+        if move == "add" and unselected:
+            return "add", self.random_generator.choice(unselected), None
 
-        if len(operations) > self.max_neighbors:
-            operations = self.random_generator.sample(
-                operations, self.max_neighbors
+        if move == "remove" and state.selected:
+            return "remove", self.random_generator.choice(state.selected), None
+
+        if state.selected and unselected:
+            return (
+                "swap",
+                self.random_generator.choice(state.selected),
+                self.random_generator.choice(unselected)
             )
 
-        neighbors = []
+        return None
 
-        for operation, first, second in operations:
-            if operation == "remove":
-                candidate = [t for t in selected if t != first]
+    def _climb(self, start, best_overall):
+        state = SelectionState(self.problem, start)
+        tests = self.problem.suite.tests
 
-            elif operation == "add":
-                candidate = selected + [first]
-
-            else:
-                candidate = [t for t in selected if t != first]
-                candidate.append(second)
-
-            if self.problem.is_feasible(candidate):
-                neighbors.append(candidate)
-
-        return neighbors
-
-    def _climb(self, current):
         for _ in range(self.max_steps):
-            best_neighbor = current
-            best_score = self._score(current)
+            unselected = [t for t in tests if t not in state.selected_set]
 
-            for neighbor in self._get_neighbors(current):
-                score = self._score(neighbor)
+            best_move = None
+            best_score = state.score()
+
+            for _ in range(self.max_neighbors):
+                move = self._sample_move(state, unselected)
+
+                if move is None:
+                    continue
+
+                covered, time = state.evaluate(*move)
+
+                if time > self.problem.budget:
+                    continue
+
+                score = state.score(covered, time)
 
                 if score > best_score:
-                    best_neighbor = neighbor
+                    best_move = move
                     best_score = score
 
-            if best_neighbor == current:
+            if best_move is None:
+                self.history.append(best_overall)
                 break
 
-            current = best_neighbor
+            state.apply(*best_move)
+            best_overall = max(best_overall, state.score()[0])
+            self.history.append(best_overall)
 
-        return current
+        return state, best_overall
 
     def optimize(self):
+        self.history = []
+
         best_solution = []
-        best_score = self._score(best_solution)
+        best_score = SelectionState(self.problem).score()
+        best_overall = best_score[0]
 
-        for _ in range(self.max_restarts):
-            starting_solution = self._create_random_solution()
-            solution = self._climb(starting_solution)
-            score = self._score(solution)
+        for restart in range(self.max_restarts):
 
-            if score > best_score:
-                best_solution = solution
-                best_score = score
+            if restart == 0 and self.greedy_start:
+                start = GreedyOptimizer(self.problem).optimize()
+            else:
+                start = self._create_random_solution()
+
+            state, best_overall = self._climb(start, best_overall)
+
+            if state.score() > best_score:
+                best_solution = state.selected.copy()
+                best_score = state.score()
 
         return best_solution
