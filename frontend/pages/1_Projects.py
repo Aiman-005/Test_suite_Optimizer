@@ -1,6 +1,7 @@
 ﻿import json
 from pathlib import Path
 from frontend.components.theme import load_css
+from frontend.components.project_selection import sync_project_selection
 import streamlit as st
 
 load_css()
@@ -136,21 +137,21 @@ else:
 
     if selected_path not in project_paths:
         selected_path = project_paths[0]
+        st.session_state["selected_project_path"] = selected_path
 
-    selected_index = project_paths.index(selected_path)
+    st.session_state["project_selector"] = selected_path
 
     selected_name = st.selectbox(
         "Select a project",
         options=project_paths,
-        index=selected_index,
         format_func=lambda path: next(
             item["name"] for item in projects
             if item["path"] == path
         ),
-        key="project_selector"
+        key="project_selector",
+        on_change=sync_project_selection,
+        args=("project_selector",)
     )
-
-    st.session_state["selected_project_path"] = selected_name
 
     selected_project = next(
         item for item in projects

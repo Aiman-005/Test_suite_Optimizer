@@ -2,14 +2,15 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from frontend.components.mutation_results import add_mutant_count_columns
 from frontend.components.theme import load_css
 
 ROOT = Path(__file__).resolve().parents[2]
 BENCHMARK_FILE = ROOT / "results" / "combined_benchmark.csv"
+DATA_DIR = ROOT / "data" / "processed"
 
 # DATA
 
-@st.cache_data
 def load_benchmarks():
     if not BENCHMARK_FILE.exists():
         return pd.DataFrame()
@@ -37,6 +38,23 @@ def load_benchmarks():
     )
 
     return df
+
+
+def load_mutant_counts(project):
+    project_key = project.lower()
+    mutants_file = DATA_DIR / f"{project_key}_mutants.csv"
+    kill_matrix_file = DATA_DIR / f"{project_key}_kill_matrix.csv"
+
+    if not mutants_file.exists() or not kill_matrix_file.exists():
+        return None
+
+    mutants = pd.read_csv(mutants_file, usecols=["mutant_id"])
+    kill_matrix = pd.read_csv(kill_matrix_file, usecols=["mutant_id"])
+    return (
+        mutants["mutant_id"].nunique(),
+        kill_matrix["mutant_id"].nunique(),
+    )
+
 
 # PAGE SETUP
 
@@ -86,7 +104,9 @@ def apply_chart_theme(fig):
 st.title("Results & Comparison")
 
 st.caption(
-    "Evaluate optimizer performance across real-world Python projects."
+    "Benchmark charts and records use one run per optimizer at 50% of "
+    "the full-suite estimated time (seed 42). Live Optimization runs use "
+    "your selected budget and are not part of this benchmark."
 )
 
 df = load_benchmarks()
@@ -401,7 +421,7 @@ display_df = display_df.rename(
         "selected_tests": "Selected Tests",
         "selected_execution_time": "Execution Time (s)",
         "coverage_percentage": "Coverage (%)",
-        "mutants_caught_percentage": "Bugs Caught (%)",
+        "mutants_caught_percentage": "Detectable Mutants Caught (%)",
         "feasible": "Feasible",
         "optimizer_runtime_seconds": "Optimizer Runtime (s)",
         "budget_seconds": "Budget (s)",
@@ -425,8 +445,8 @@ st.dataframe(
             "Coverage (%)",
             format="%.2f%%",
         ),
-        "Bugs Caught (%)": st.column_config.NumberColumn(
-            "Bugs Caught (%)",
+        "Detectable Mutants Caught (%)": st.column_config.NumberColumn(
+            "Detectable Mutants Caught (%)",
             format="%.2f%%",
         ),
         "Optimizer Runtime (s)": st.column_config.NumberColumn(
@@ -462,7 +482,6 @@ st.caption(
 SWEEP_FILE = ROOT / "results" / "budget_sweep.csv"
 
 
-@st.cache_data
 def load_budget_sweep():
     if not SWEEP_FILE.exists():
         return pd.DataFrame()
@@ -474,8 +493,8 @@ st.markdown("### Compare Methods at a Time Budget")
 st.caption(
     "Pick a project and a time budget (as a share of the full suite's run time). "
     "Values are means over 30 seeds from the pre-collected experiment; "
-    "greedy is deterministic. Bugs Caught = share of the seeded bugs (mutants) "
-    "that the full suite catches and the selected tests still catch."
+    "greedy is deterministic. Detectable Mutants Caught (%) is the share of "
+    "mutants killed by the full suite that the selected tests still kill."
 )
 
 sweep = load_budget_sweep()
@@ -570,7 +589,7 @@ else:
         "mean_coverage": "Mean Coverage (%)",
         "std_coverage": "Std Dev (pts)",
         "best_coverage": "Best Coverage (%)",
-        "bugs_caught": "Bugs Caught (%)",
+        "bugs_caught": "Detectable Mutants Caught (%)",
         "tests_selected": "Tests Selected",
         "time_used": "Time Used (s)",
         "time_saved": "Time Saved vs Full Suite (%)",
@@ -585,7 +604,9 @@ else:
             "Mean Coverage (%)": st.column_config.NumberColumn(format="%.2f"),
             "Std Dev (pts)": st.column_config.NumberColumn(format="%.2f"),
             "Best Coverage (%)": st.column_config.NumberColumn(format="%.2f"),
-            "Bugs Caught (%)": st.column_config.NumberColumn(format="%.2f"),
+            "Detectable Mutants Caught (%)": st.column_config.NumberColumn(
+                format="%.2f"
+            ),
             "Tests Selected": st.column_config.NumberColumn(format="%.1f"),
             "Time Used (s)": st.column_config.NumberColumn(format="%.4f"),
             "Time Saved vs Full Suite (%)": st.column_config.NumberColumn(format="%.1f"),
@@ -627,3 +648,111 @@ else:
         width="stretch",
         config={"displaylogo": False, "responsive": True},
     )
+
+    st.divider()
+    st.markdown("### Fault Detection & Mutants Caught")
+
+    mutant_counts = load_mutant_counts(sweep_project)
+    if mutant_counts is None:
+        st.info(
+            f"Mutation results are unavailable for {sweep_project}; "
+            "both the sampled-mutant file and kill matrix are required."
+        )
+    else:
+        total_mutants, detectable_mutants = mutant_counts
+        if total_mutants == 0 or detectable_mutants == 0:
+            st.info(
+                f"Mutation detection counts are unavailable for {sweep_project}: "
+                "the sampled-mutant file or full-suite kill matrix has no mutants."
+            )
+        else:
+            project_sweep = sweep[sweep["project"] == sweep_project]
+            fault_sweep = add_mutant_count_columns(
+                project_sweep,
+                total_mutants=total_mutants,
+                detectable_mutants=detectable_mutants,
+            )
+            fault_at_budget = (
+                fault_sweep[fault_sweep["budget_fraction"] == sweep_budget]
+                .groupby("optimizer")
+                .agg(
+                    mutants_caught=("mutants_caught_count", "mean"),
+                    mutants_survived=("mutants_survived_count", "mean"),
+                    detection_percentage=("mutant_detection_percentage", "mean"),
+                )
+                .reset_index()
+            )
+
+            if fault_at_budget.empty:
+                st.info(
+                    "No mutant-detection records match the selected project "
+                    "and budget."
+                )
+            else:
+                metric_optimizer = st.selectbox(
+                    "Optimizer for mutant metrics",
+                    sorted(fault_at_budget["optimizer"].tolist()),
+                    key="fault_optimizer",
+                )
+                metric_row = fault_at_budget[
+                    fault_at_budget["optimizer"] == metric_optimizer
+                ].iloc[0]
+                mutant_col1, mutant_col2, mutant_col3, mutant_col4 = st.columns(4)
+                mutant_col1.metric("Total Mutants", total_mutants)
+                mutant_col2.metric(
+                    "Mean Mutants Caught",
+                    f'{metric_row["mutants_caught"]:.1f}',
+                )
+                mutant_col3.metric(
+                    "Mean Mutants Survived",
+                    f'{metric_row["mutants_survived"]:.1f}',
+                )
+                mutant_col4.metric(
+                    "Mutant Detection (%)",
+                    f'{metric_row["detection_percentage"]:.2f}%',
+                )
+
+                st.caption(
+                    "Counts and detection percentages use all sampled mutants; "
+                    "mutants not killed by the full suite count as survived. "
+                    "Values are means across stored seeds (Greedy has one run)."
+                )
+
+                fault_curve = (
+                    fault_sweep.groupby(["budget_fraction", "optimizer"])
+                    ["mutants_caught_count"]
+                    .mean()
+                    .reset_index(name="mean_mutants_caught")
+                )
+                fault_curve["budget_percent"] = (
+                    fault_curve["budget_fraction"] * 100
+                )
+                fault_fig = px.line(
+                    fault_curve,
+                    x="budget_percent",
+                    y="mean_mutants_caught",
+                    color="optimizer",
+                    markers=True,
+                    log_x=True,
+                    labels={
+                        "budget_percent": (
+                            "Time Budget (% of Full Suite, log scale)"
+                        ),
+                        "mean_mutants_caught": "Mean Mutants Caught",
+                        "optimizer": "Optimizer",
+                    },
+                )
+                fault_fig.add_vline(
+                    x=sweep_budget * 100,
+                    line_dash="dot",
+                    line_color="gray",
+                    annotation_text="selected budget",
+                )
+                fault_fig.update_layout(height=420)
+                fault_fig.update_yaxes(range=[0, total_mutants])
+                apply_chart_theme(fault_fig)
+                st.plotly_chart(
+                    fault_fig,
+                    width="stretch",
+                    config={"displaylogo": False, "responsive": True},
+                )

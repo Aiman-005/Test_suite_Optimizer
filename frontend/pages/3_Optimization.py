@@ -135,6 +135,10 @@ if (
     st.subheader("Optimization results")
 
     st.caption(f"Algorithm: **{result['algorithm']}**")
+    st.caption(
+        "Live result for the selected project and budget; it is separate "
+        "from the precomputed benchmark charts."
+    )
 
     col1, col2, col3, col4 = st.columns(4)
 

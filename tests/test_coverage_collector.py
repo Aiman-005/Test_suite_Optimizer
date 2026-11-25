@@ -1,6 +1,8 @@
+import json
+from types import SimpleNamespace
 
 import pytest
-
+from src.collect import coverage_collector
 from src.collect.coverage_collector import collect_test_coverage
 
 
@@ -57,6 +59,47 @@ def test_second():
 
     assert 3 in first_coverage["app.py"]
     assert 7 in second_coverage["app.py"]
+
+
+def test_passes_large_node_id_list_via_stdin(tmp_path, monkeypatch):
+    test_cases = [
+        {
+            "node_id": (
+                f"tests/test_example.py::test_case_{index}_"
+                + "x" * 50
+            )
+        }
+        for index in range(621)
+    ]
+    node_ids_json = json.dumps(
+        [test["node_id"] for test in test_cases]
+    )
+
+    def fake_run(args, **kwargs):
+        assert len(args) == 4
+        assert kwargs["input"] == node_ids_json
+        assert len(node_ids_json) > 32767
+        result = {
+            "coverage": {},
+            "pytest_exit_code": 0,
+            "total_tests": len(test_cases),
+            "tests_with_coverage": 0
+        }
+        return SimpleNamespace(
+            stdout=f"COVERAGE_RESULT:{json.dumps(result)}",
+            stderr="",
+            returncode=0
+        )
+
+    monkeypatch.setattr(
+        coverage_collector.subprocess,
+        "run",
+        fake_run
+    )
+
+    result = collect_test_coverage(tmp_path, test_cases)
+
+    assert result["total_tests"] == 621
 
 
 def test_rejects_empty_test_list(tmp_path):

@@ -32,7 +32,7 @@ import pytest
 
 
 project_path = Path(sys.argv[1]).resolve()
-node_ids = json.loads(sys.argv[2])
+node_ids = json.load(sys.stdin)
 
 
 class TestCoveragePlugin:
@@ -130,12 +130,12 @@ print("COVERAGE_RESULT:" + json.dumps(result))
             sys.executable,
             "-c",
             script,
-            str(project_path),
-            json.dumps(node_ids)
+            str(project_path)
         ],
         cwd=str(project_path),
         capture_output=True,
         text=True,
+        input=json.dumps(node_ids),
         env={
             **os.environ,
             "COVERAGE_CORE": "ctrace"

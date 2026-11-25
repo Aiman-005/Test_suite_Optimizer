@@ -9,7 +9,6 @@ BENCHMARK_FILE = ROOT / "results" / "combined_benchmark.csv"
 
 load_css()
 
-@st.cache_data
 def load_benchmarks():
     if not BENCHMARK_FILE.exists():
         return pd.DataFrame()
@@ -106,7 +105,8 @@ with c4:
 # Coverage chart
 section_heading(
     "Optimization performance",
-    "Code coverage achieved by each optimizer across the benchmark projects.",
+    "Recorded runs use a 50% full-suite time budget and seed 42. "
+    "These benchmark records are separate from live Optimization runs.",
 )
 
 coverage = (
