@@ -1,14 +1,11 @@
 
 import csv
 from pathlib import Path
-
 from src.collect.test_discovery import discover_test_cases
 from src.collect.test_executor import run_discovered_tests
 from src.collect.coverage_collector import collect_test_coverage
-
 from src.core.test_suite import TestSuite
 from src.core.selection_problem import SelectionProblem
-
 
 def load_duration_estimates(csv_path):
     """Load Kalman-filtered test durations from a CSV file."""
@@ -42,9 +39,7 @@ def analyze_project(
     timing_estimates_path=None
 ):
     """
-    Analyze a Python project and build its test selection problem.
-
-    Uses Kalman estimates when a timing CSV is provided.
+    Analyzess a Python project and build its test selection problem.Uses Kalman estimates when a timing CSV is provided.
     Otherwise, uses measured execution durations.
     """
 

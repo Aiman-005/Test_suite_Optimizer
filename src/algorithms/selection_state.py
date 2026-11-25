@@ -1,12 +1,7 @@
-
 class SelectionState:
-    """
-    A test selection with incremental coverage bookkeeping.
-
-    Keeps a count of how many selected tests cover each line, so the
-    effect of adding, removing or swapping one test is computed from
-    that test's lines only, instead of rebuilding the whole union.
-    Used by hill climbing and simulated annealing.
+    """ A test selection with incremental coverage bookkeeping.Keeps a count of how many selected tests cover each line, so the
+    effect of adding, removing or swapping one test is computed fromthat test's lines only, instead of rebuilding the whole union.
+   this is used Used by hill climbing and simulated annealing.
     """
 
     def __init__(self, problem, selected=()):

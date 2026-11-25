@@ -1,10 +1,7 @@
-
 import os
 import time
 from pathlib import Path
-
 import pytest
-
 
 class TestTimingPlugin:
     """Collect individual pytest execution times and outcomes."""

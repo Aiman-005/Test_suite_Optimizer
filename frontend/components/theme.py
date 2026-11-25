@@ -1,5 +1,4 @@
-﻿
-from pathlib import Path
+﻿from pathlib import Path
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[2]

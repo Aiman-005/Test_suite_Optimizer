@@ -1,11 +1,7 @@
 import random
 from src.algorithms.base import Optimizer
-
-
 class RandomSelectionOptimizer(Optimizer):
-    """
-    Selects test cases randomly while respecting
-    the available execution-time budget.
+    """Selects test cases randomly while respectingthe available execution-time budget.
     """
 
     name = "Random Selection"

@@ -80,7 +80,7 @@ On macOS / Linux use `source .venv/bin/activate`. The processed data is already 
 ## How to run
 
 ```powershell
-python -m pytest tests                        # 65 unit tests
+python -m pytest tests                        # 51 unit tests
 python run_experiments.py                     # all optimiser experiments + charts (10-20 min; --seeds 5 is quicker)
 python -m src.ai_demos.kmeans_clustering      # K-Means results in results/ml/
 python -m src.ai_demos.linear_regression      # regression results in results/ml/

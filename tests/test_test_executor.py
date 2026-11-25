@@ -1,6 +1,4 @@
-
 from src.collect.test_executor import run_discovered_tests
-
 
 def test_executor_records_test_results(tmp_path, monkeypatch):
     import src.collect.test_executor as executor

@@ -1,14 +1,10 @@
-"""
-Base class shared by every test-selection optimiser (proposal 4.1).
-
-Each optimiser inherits from Optimizer and overrides optimize().
+"""this is the Base class shared by every test-selection optimiser.
+Each optimiser inherits fromm OOptimizer and overrides optimize().
 solve() is inherited unchanged: it times optimize() and evaluates the
 selection, so every method is measured the same way.
 """
-
 import time
 from abc import ABC, abstractmethod
-
 
 class Optimizer(ABC):
     """Abstract optimiser for a SelectionProblem."""

@@ -1,10 +1,6 @@
 from src.algorithms.base import Optimizer
-
-
 class GreedyOptimizer(Optimizer):
-    """
-    Selects tests based on additional code coverage
-    per unit of execution time.
+    """ Selects tests based on additional code coverage per unit of execution time.
     """
 
     name = "Greedy"

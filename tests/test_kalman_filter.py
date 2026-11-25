@@ -1,8 +1,5 @@
-
 import pytest
-
 from src.core.kalman_filter import KalmanDurationEstimator
-
 
 def test_initial_measurement():
     estimator = KalmanDurationEstimator()

@@ -49,9 +49,8 @@ p, label, span {
     color: var(--text);
 }
 
-/* --------------------------------------------------
-   CUSTOM HERO AND CARDS
--------------------------------------------------- */
+
+/*CUstom cardss and hero*/
 
 .hero {
     padding: 1.7rem 0 1.5rem;
@@ -155,9 +154,8 @@ p, label, span {
     margin-right: 7px;
 }
 
-/* --------------------------------------------------
-   METRICS AND FORMS
--------------------------------------------------- */
+
+/*METRICS AND FORMS*/
 
 [data-testid="stMetric"] {
     background: var(--panel);
@@ -189,9 +187,7 @@ p, label, span {
     padding: 1.25rem;
 }
 
-/* --------------------------------------------------
-   INPUTS AND DROPDOWNS
--------------------------------------------------- */
+/* INPUTS AND DROPDOWNS */
 
 .stTextInput input,
 .stNumberInput input,
@@ -250,9 +246,7 @@ p, label, span {
     ) !important;
 }
 
-/* --------------------------------------------------
-   BUTTONS
--------------------------------------------------- */
+/* BUTTONS*/
 
 .stButton > button,
 .stDownloadButton > button,
@@ -293,9 +287,7 @@ p, label, span {
     );
 }
 
-/* --------------------------------------------------
-   RADIO BUTTONS AND CHECKBOXES
--------------------------------------------------- */
+/* RADIO BUTTONS AND CHECKBOXES*/
 
 [data-testid="stRadio"],
 [data-testid="stCheckbox"] {
@@ -307,9 +299,7 @@ p, label, span {
     color: var(--text) !important;
 }
 
-/* --------------------------------------------------
-   ALERTS, EXPANDERS AND CAPTIONS
--------------------------------------------------- */
+/* ALERTS, EXPANDERS AND CAPTIONS*/
 
 [data-testid="stAlert"] {
     border-radius: 12px;
@@ -331,9 +321,7 @@ p, label, span {
     color: var(--muted);
 }
 
-/* --------------------------------------------------
-   TABLES AND DATAFRAMES
--------------------------------------------------- */
+/* TABLES AND DATAFRAMES*/
 
 [data-testid="stDataFrame"],
 [data-testid="stTable"] {
@@ -342,9 +330,7 @@ p, label, span {
     overflow: hidden;
 }
 
-/* --------------------------------------------------
-   PLOTLY CHARTS
--------------------------------------------------- */
+/* PLOTLY CHARTS*/
 
 div[data-testid="stPlotlyChart"] {
     background: var(--panel);
@@ -381,9 +367,7 @@ hr {
     border-color: var(--border);
 }
 
-/* --------------------------------------------------
-   PREMIUM SIDEBAR
--------------------------------------------------- */
+/* PREMIUM SIDEBAR*/
 
 /* Hide Streamlit's automatic navigation */
 [data-testid="stSidebarNav"] {

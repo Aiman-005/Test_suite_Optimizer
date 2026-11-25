@@ -1,23 +1,11 @@
 from src.algorithms.base import Optimizer
-
-
 class CSPOptimizer(Optimizer):
-    """
-    Solves the test-selection problem as a CSP (Lab 07).
-
-    Variables: one per test. Domain: {1 = run, 0 = skip}.
-    Constraint: total duration of the tests set to 1 <= budget.
-    Objective: among consistent complete assignments, the one with the
-    most covered lines (ties: lower time).
-
+    """Solves the test-selection problem using CSP.Each test can be selected (1) or skipped (0).
+    The total time of selected tests must stay within the budget.The goal is to get the highest code coverage.
     Options:
-    - use_mrv: choose the unassigned variable with the fewest remaining
-      values (Minimum Remaining Values); otherwise take tests in order.
-    - forward_checking: after each assignment, remove value 1 from every
-      test that no longer fits in the remaining budget.
-
-    Statistics of the last run: nodes (assignments tried) and
-    backtracks (dead ends where a value had to be undone).
+    use_mrv: Selects the test with the fewest available choices first.and 
+    forward_checking: Skips tests that no longer fit the budget.
+    Tracks the number of assignments and backtracks.
     """
 
     name = "CSP"

@@ -1,15 +1,11 @@
 
 import random
-
 from src.algorithms.greedy import GreedyOptimizer
 from src.algorithms.selection_state import SelectionState
 from src.algorithms.base import Optimizer
-
-
 class HillClimbingOptimizer(Optimizer):
     """
-    Hill climbing with random restarts (Lab 06).
-
+    Hill climbing with random restarts.
     The first climb starts from the greedy solution; every other
     restart starts from a random feasible selection. Each step samples
     add / remove / swap neighbours and moves to the best one that

@@ -3,8 +3,6 @@ from src.collect.test_discovery import (
     discover_test_files,
     discover_test_cases
 )
-
-
 def test_discover_test_files(tmp_path):
     (tmp_path / "tests").mkdir()
 

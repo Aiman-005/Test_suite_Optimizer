@@ -1,5 +1,4 @@
-﻿
-from pathlib import Path
+﻿from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -274,10 +273,7 @@ if timing is not None and not timing.empty:
             f"{durations.median():.5f} s"
         )
 
-        # ------------------------------------------
         # DURATION DISTRIBUTION
-        # ------------------------------------------
-
         st.subheader("Estimated Duration Distribution")
 
         histogram = px.histogram(
@@ -299,10 +295,7 @@ if timing is not None and not timing.empty:
             use_container_width=True
         )
 
-        # ------------------------------------------
         # DURATION ESTIMATES TABLE
-        # ------------------------------------------
-
         st.subheader("Test Duration Estimates")
 
         display_columns = [

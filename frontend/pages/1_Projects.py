@@ -19,9 +19,7 @@ EXCLUDED_DIRS = {
 }
 
 
-# --------------------------------------------------
-# Project registry
-# --------------------------------------------------
+# Project registering
 
 def load_projects():
     if not REGISTRY_PATH.exists():
@@ -55,10 +53,7 @@ def contains_python_files(folder):
 
     return False
 
-
-# --------------------------------------------------
-# Page heading
-# --------------------------------------------------
+# Project page heading
 
 st.title("Projects")
 st.caption("Register and manage the Python projects you want to analyze.")
@@ -67,10 +62,7 @@ projects = load_projects()
 
 st.divider()
 
-# --------------------------------------------------
 # Register a project
-# --------------------------------------------------
-
 st.subheader("Register a project")
 st.write("Add a Python project from a folder on your computer.")
 
@@ -130,11 +122,7 @@ with st.form("register_project_form"):
                     st.success(f"{name} was registered successfully.")
                     st.rerun()
 
-
-# --------------------------------------------------
 # Registered projects
-# --------------------------------------------------
-
 st.divider()
 st.subheader("Your projects")
 

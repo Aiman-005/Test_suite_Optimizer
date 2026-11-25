@@ -1,25 +1,13 @@
-
 import heapq
 from abc import ABC, abstractmethod
 from itertools import count
-
-
 class SearchOptimizer:
-    """
-    Implements Uniform Cost Search (Lab 04) and A* (Lab 05).
-
-    Each node decides, for the next test in order, whether to include
-    or exclude it. Path cost g(n) = seconds of the tests included so
-    far. UCS orders the frontier by g(n); A* by g(n) + h(n), where h is
-    the admissible time estimate in _heuristic(). A branch-and-bound
-    check prunes nodes that cannot beat the best selection found.
-
-    The objective is to maximize code coverage without
-    exceeding the execution-time budget.
-
-    Small problems can be searched exhaustively.
-    Large problems use a configurable state limit.
-    """
+    """Implements Uniform Cost Searchand A*.Eac node decides, for the next test in order, whether to include
+    or exclude it.A branch-and-bound check prunes nodes that cannot beat the best selection found.
+    The objective is to maximize code coverage without exceeding the execution-time budget.
+    Small problems can be searched exhaustively.Large problems use a configurable state limit.
+    h(n) is the admissible time estimate in heuristic.
+    g(n) isthe path cost of the tests includeddd  """
 
     def __init__(self, problem, max_states=20000):
         self.problem = problem

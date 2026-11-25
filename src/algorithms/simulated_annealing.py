@@ -1,22 +1,16 @@
 import math
 import random
-
 from src.algorithms.greedy import GreedyOptimizer
 from src.algorithms.selection_state import SelectionState
 from src.algorithms.base import Optimizer
-
-
 class SimulatedAnnealingOptimizer(Optimizer):
     """
-    Optimizes test selection using simulated annealing (Lab 06).
-
-    Starts from the greedy solution, proposes add / remove / swap moves,
-    and accepts a worse move with probability exp(delta / T), where
+    Improves test selection using simulated annealing.
+    Starts with the greedy solution and tries adding, removing,
+    or swaapping tests to improve code coverage.Sometimes accepts a worse solution to explore other options.with probability exp(delta / T), where
     delta is the change in the number of covered lines (so T is in
-    "lines"). The temperature cools geometrically:
-    T <- T * cooling_rate after every iteration.
+    "lines"). The temperature cools geometrically:T <- T * cooling_rate after every iteration.Gradually reduces the chance of accepting worse solutions.
     """
-
     name = "Simulated Annealing"
 
     def __init__(

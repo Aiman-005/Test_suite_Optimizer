@@ -440,7 +440,7 @@ st.dataframe(
     },
 )
 
-# Download filtered benchmark data
+# Downloads filtered benchmark data
 csv_data = filtered_df.to_csv(index=False).encode("utf-8")
 
 st.download_button(

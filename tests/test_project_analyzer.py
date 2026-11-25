@@ -1,8 +1,5 @@
-
 import pytest
-
 from src.app import project_analyzer
-
 
 def test_analyze_project_builds_problem_from_real_data(
     tmp_path,

@@ -1,18 +1,10 @@
 """
 Mutation testing: seed small bugs and record which tests catch them.
-
 A mutant is a copy of the project with one small change on a line that
-at least one test covers, for example `<` -> `<=`, `+` -> `-`,
-`and` -> `or`, `True` -> `False`, `n` -> `n + 1`, or removing a `not`.
-For every mutant, the tests that cover the mutated line are run against
+at least one test covers, the thing which we studied in sqee. For every mutant, the tests that cover the mutated line are run against
 the mutated code; a test "kills" the mutant if it fails (or the run
 times out). Tests that do not cover the line cannot reach the change,
-so they are not run.
-
-The result is a kill matrix (mutant x test), used to measure how many
-seeded bugs a selected subset of tests still detects.
-"""
-
+so they are not run."""
 import ast
 import json
 import os
@@ -124,7 +116,7 @@ def _replace_word(line, start, end, old, new):
     return (data[:start] + segment.encode("utf-8") + data[end:]).decode("utf-8")
 
 
-# ------------------------------------------------------- mutant creation
+#  mutant creation
 
 def find_mutation_points(source, covered_lines):
     """

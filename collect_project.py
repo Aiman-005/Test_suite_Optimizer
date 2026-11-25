@@ -1,19 +1,3 @@
-"""
-Collect per-test coverage and repeated timings for one Python project.
-
-Example (from the project root, with the target project cloned and its
-test dependencies installed in the same environment):
-
-    python collect_project.py --project data/raw/tinydb --name tinydb
-    python collect_project.py --project data/raw/tinydb --name tinydb --coverage-only
-
-Writes to data/processed/:
-    <name>_coverage_matrix.csv   test_node_id, source_file, covered_lines
-    <name>_timing_runs.csv       project, run_number, node_id, status, duration_seconds
-    <name>_source.json           commit hash of the project that was measured
-and then rebuilds <name>_kalman_estimates.csv.
-"""
-
 import argparse
 import csv
 import json
@@ -26,7 +10,6 @@ from src.collect.timing_collector import collect_repeated_timings
 from build_kalman_estimates import build_estimates
 
 OUTPUT_DIR = Path("data/processed")
-
 
 def batches(items, size):
     for start in range(0, len(items), size):

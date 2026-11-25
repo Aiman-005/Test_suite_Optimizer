@@ -1,4 +1,3 @@
-
 import os
 import json
 import subprocess
@@ -25,10 +24,9 @@ def collect_test_coverage(project_path, test_cases):
         raise ValueError("Duplicate test node IDs were provided.")
 
     script = r'''
+from pathlib import Path
 import json
 import sys
-from pathlib import Path
-
 import coverage
 import pytest
 

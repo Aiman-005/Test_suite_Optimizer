@@ -1,15 +1,3 @@
-"""
-Turn repeated timing runs into Kalman-filtered duration estimates.
-
-    python build_kalman_estimates.py            # all three projects
-    python build_kalman_estimates.py tinydb     # one project
-
-Reads  data/processed/<name>_timing_runs.csv
-Writes data/processed/<name>_kalman_estimates.csv with the columns
-    test_node_id, raw_mean_seconds, kalman_estimate_seconds, measurements
-(the same columns for every project). Only passed runs are used.
-"""
-
 import csv
 import sys
 from collections import defaultdict

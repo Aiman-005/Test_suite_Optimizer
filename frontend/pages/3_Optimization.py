@@ -2,9 +2,7 @@
 import streamlit as st
 from frontend.components.theme import load_css
 
-
 load_css()
-
 st.title("Optimization")
 st.caption("Choose an optimization algorithm and generate an efficient test suite.")
 

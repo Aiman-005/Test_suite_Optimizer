@@ -1,16 +1,3 @@
-"""
-Seed small bugs (mutants) into a project and record which tests catch them.
-
-    python collect_mutants.py --project data/raw/tinydb --name tinydb
-    python collect_mutants.py --project data/raw/boltons --name boltons --mutants 150
-
-Needs the project cloned in data/raw/ (same commit as the coverage data)
-and its test dependencies installed. Reads
-data/processed/<name>_coverage_matrix.csv and writes:
-    data/processed/<name>_mutants.csv       one row per mutant
-    data/processed/<name>_kill_matrix.csv   one row per (mutant, test that catches it)
-"""
-
 import argparse
 import csv
 import time
@@ -19,7 +6,6 @@ from pathlib import Path
 from src.collect.mutation import generate_mutants, load_coverage, run_mutants
 
 DATA_DIR = Path("data/processed")
-
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

@@ -1,10 +1,8 @@
-
 import csv
 import json
 import subprocess
 import sys
 from pathlib import Path
-
 
 def collect_repeated_timings(
     project_path,
