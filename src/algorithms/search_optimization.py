@@ -20,6 +20,7 @@ class SearchOptimizer:
         # Search statistics of the last run (for UCS vs A* comparisons).
         self.nodes_expanded = 0
         self.nodes_generated = 0
+        self.state_limit_reached = False
 
     def _heuristic(self, covered, next_index):
         """
@@ -232,6 +233,7 @@ class SearchOptimizer:
 
         self.nodes_expanded = expanded_states
         self.nodes_generated = generated_states
+        self.state_limit_reached = bool(frontier)
 
         return best_solution
 

@@ -106,7 +106,9 @@ with c4:
 section_heading(
     "Optimization performance",
     "Recorded runs use a 50% full-suite time budget and seed 42. "
-    "These benchmark records are separate from live Optimization runs.",
+    "Uniform-Cost Search stops at 20,000 states; when capped, its result is "
+    "the best feasible selection found, not a proven optimum. "
+    "These records are separate from live Optimization runs.",
 )
 
 coverage = (

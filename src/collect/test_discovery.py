@@ -44,7 +44,6 @@ def discover_test_files(project_path):
 def discover_test_cases(project_path):
     """
     Discover actual pytest test cases, including parametrized tests.
-
     Pytest performs collection in a separate process so this function
     can also safely be called from an existing pytest test session.
     """

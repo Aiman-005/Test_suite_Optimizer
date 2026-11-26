@@ -1,12 +1,8 @@
 """
-Reproduce every optimiser result and chart with one command.
-
-    python run_experiments.py              # 30 seeds (about 10-20 minutes)
-    python run_experiments.py --seeds 5    # quicker run
-
+Reproduce benchmark records and charts with one command.
 Reads only data/processed/. Writes:
-  results/combined_benchmark.csv      main benchmark: 50% budget, seed 42 (used by the dashboard)
-  results/budget_sweep.csv            every method x project x budget x seed
+  results/combined_benchmark.csv      main benchmark: 50% budget, seed 42, including UCS (20,000-state limit)
+  results/budget_sweep.csv            four heuristic methods x project x budget x seed
   results/budget_sweep_summary.csv    mean and standard deviation over seeds
   results/exact_small_instances.csv   30 small sub-suites: optimum, UCS/A* nodes, CSP backtracks
   results/convergence.csv             best coverage per iteration (hill climbing, simulated annealing)
@@ -45,6 +41,7 @@ DATA_DIR = Path("data/processed")
 RESULTS_DIR = Path("results")
 CHARTS_DIR = RESULTS_DIR / "charts"
 METHODS = ["Random Selection", "Greedy", "Hill Climbing", "Simulated Annealing"]
+MAIN_BENCHMARK_METHODS = METHODS + ["Uniform-Cost Search"]
 
 
 # ----------------------------------------------------------------- data
@@ -107,17 +104,29 @@ def make_optimizer(name, problem, seed):
         return GreedyOptimizer(problem)
     if name == "Hill Climbing":
         return HillClimbingOptimizer(problem, seed=seed)
-    return SimulatedAnnealingOptimizer(problem, seed=seed)
+    if name == "Simulated Annealing":
+        return SimulatedAnnealingOptimizer(problem, seed=seed)
+    if name == "Uniform-Cost Search":
+        return SearchOptimizer(problem)
+    raise ValueError(f"Unsupported benchmark method: {name}")
 
 
 def run_method(name, problem, seed):
     optimizer = make_optimizer(name, problem, seed)
     start = time.perf_counter()
-    selected = optimizer.optimize()
+    if name == "Uniform-Cost Search":
+        selected = optimizer.uniform_cost_search()
+    else:
+        selected = optimizer.optimize()
     runtime = time.perf_counter() - start
     result = problem.evaluate(selected)
     result["optimizer_runtime_seconds"] = runtime
     result["history"] = getattr(optimizer, "history", None)
+    if name == "Uniform-Cost Search":
+        result["nodes_expanded"] = optimizer.nodes_expanded
+        result["state_limit"] = optimizer.max_states
+        result["state_limit_reached"] = optimizer.state_limit_reached
+        result["optimality_proven"] = not optimizer.state_limit_reached
     return result
 
 
@@ -127,7 +136,7 @@ def main_benchmark(suites, kill_data):
     rows = []
     for project, suite in suites.items():
         problem = SelectionProblem(suite, suite.time_of(suite.tests) * 0.5)
-        for name in METHODS:
+        for name in MAIN_BENCHMARK_METHODS:
             r = run_method(name, problem, seed=42)
             rows.append({
                 "project": project,
@@ -139,6 +148,10 @@ def main_benchmark(suites, kill_data):
                 "optimizer_runtime_seconds": r["optimizer_runtime_seconds"],
                 "budget_seconds": problem.budget,
                 "mutants_caught_percentage": mutation_score(r["selected_tests"], kill_data[project]),
+                "nodes_expanded": r.get("nodes_expanded"),
+                "state_limit": r.get("state_limit"),
+                "state_limit_reached": r.get("state_limit_reached"),
+                "optimality_proven": r.get("optimality_proven"),
             })
     pd.DataFrame(rows).to_csv(RESULTS_DIR / "combined_benchmark.csv", index=False)
     print("Main benchmark saved.")

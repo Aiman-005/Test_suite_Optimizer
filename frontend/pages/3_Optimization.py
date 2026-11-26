@@ -129,9 +129,7 @@ if run_optimization:
 
             if algorithm == "Uniform-Cost Search":
                 evaluation["nodes_expanded"] = optimizer.nodes_expanded
-                evaluation["optimality_proven"] = (
-                    optimizer.nodes_expanded < optimizer.max_states
-                )
+                evaluation["optimality_proven"] = not optimizer.state_limit_reached
                 evaluation["max_states"] = optimizer.max_states
 
             st.session_state["optimization_result"] = evaluation

@@ -170,7 +170,18 @@ def test_ucs_reports_search_effort_and_completes_small_problem():
 
     assert optimizer.nodes_expanded > 0
     assert optimizer.nodes_expanded < optimizer.max_states
+    assert not optimizer.state_limit_reached
     assert result["feasible"]
+
+
+def test_ucs_reports_when_state_limit_stops_search():
+    problem = create_sample_problem()
+    optimizer = SearchOptimizer(problem, max_states=1)
+
+    optimizer.uniform_cost_search()
+
+    assert optimizer.nodes_expanded == 1
+    assert optimizer.state_limit_reached
 
 
 def test_astar_finds_best_sample_coverage():
