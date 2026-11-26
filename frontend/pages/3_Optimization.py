@@ -1,6 +1,11 @@
 ﻿import time
+from pathlib import Path
+
+import pandas as pd
 import streamlit as st
 from frontend.components.theme import load_css
+
+ROOT = Path(__file__).resolve().parents[2]
 
 load_css()
 st.title("Optimization")
@@ -47,7 +52,8 @@ algorithm_options = [
     "Greedy",
     "Random Selection",
     "Hill Climbing",
-    "Simulated Annealing"
+    "Simulated Annealing",
+    "Uniform-Cost Search"
 ]
 
 with st.form("optimization_form"):
@@ -83,6 +89,7 @@ if run_optimization:
     from src.algorithms.greedy import GreedyOptimizer
     from src.algorithms.hill_climbing import HillClimbingOptimizer
     from src.algorithms.simulated_annealing import SimulatedAnnealingOptimizer
+    from src.algorithms.search_optimization import SearchOptimizer
 
     problem = SelectionProblem(suite, budget)
 
@@ -103,10 +110,15 @@ if run_optimization:
             elif algorithm == "Hill Climbing":
                 optimizer = HillClimbingOptimizer(problem, seed=42)
 
+            elif algorithm == "Uniform-Cost Search":
+                optimizer = SearchOptimizer(problem)
+                selected_tests = optimizer.uniform_cost_search()
+
             else:
                 optimizer = SimulatedAnnealingOptimizer(problem, seed=42)
 
-            selected_tests = optimizer.optimize()
+            if algorithm != "Uniform-Cost Search":
+                selected_tests = optimizer.optimize()
 
             runtime = time.perf_counter() - start_time
 
@@ -114,6 +126,13 @@ if run_optimization:
             evaluation["optimizer_runtime_seconds"] = runtime
             evaluation["algorithm"] = algorithm
             evaluation["project_path"] = selected_project
+
+            if algorithm == "Uniform-Cost Search":
+                evaluation["nodes_expanded"] = optimizer.nodes_expanded
+                evaluation["optimality_proven"] = (
+                    optimizer.nodes_expanded < optimizer.max_states
+                )
+                evaluation["max_states"] = optimizer.max_states
 
             st.session_state["optimization_result"] = evaluation
             st.session_state["optimization_project_path"] = selected_project
@@ -129,8 +148,6 @@ if (
     result is not None
     and st.session_state.get("optimization_project_path") == selected_project
 ):
-    import pandas as pd
-
     st.divider()
     st.subheader("Optimization results")
 
@@ -159,7 +176,11 @@ if (
     )
 
     col4.metric(
-        "Optimizer runtime",
+        (
+            "Search runtime"
+            if "nodes_expanded" in result
+            else "Optimizer runtime"
+        ),
         f'{result["optimizer_runtime_seconds"]:.4f} s'
     )
 
@@ -167,6 +188,26 @@ if (
         st.success("The selected test suite satisfies the time budget.")
     else:
         st.error("The selected test suite exceeds the time budget.")
+
+    if "nodes_expanded" in result:
+        col1, col2 = st.columns(2)
+        col1.metric("Nodes expanded", result["nodes_expanded"])
+        col2.metric(
+            "Optimality",
+            "Proven" if result["optimality_proven"] else "Not proven"
+        )
+
+        if result["optimality_proven"]:
+            st.success(
+                "The UCS search completed; its solution is optimal for the "
+                "budgeted maximum-coverage objective."
+            )
+        else:
+            st.warning(
+                "UCS reached its existing "
+                f'{result["max_states"]:,}-state search limit. The returned '
+                "solution is feasible, but optimality is not proven."
+            )
 
     original_time = suite.summary()["total_execution_time"]
 
@@ -224,4 +265,75 @@ if (
 
 elif result is None:
     st.info("Configure your algorithm and click Run Optimization.")
+
+
+st.divider()
+st.subheader("Saved UCS vs A* exact-instance comparison")
+st.caption(
+    "This precomputed comparison is separate from the live budgeted "
+    "maximum-coverage run above. It uses the saved 15-test instances and "
+    "the cheapest-full-coverage UCS/A* formulation."
+)
+
+exact_results_path = ROOT / "results" / "exact_small_instances.csv"
+
+if exact_results_path.exists():
+    exact_results = pd.read_csv(exact_results_path)
+    project_name = Path(selected_project).name.casefold()
+    project_results = exact_results[
+        exact_results["project"].astype(str).str.casefold() == project_name
+    ]
+
+    if project_results.empty:
+        st.info(
+            "Saved exact-instance results are available for TinyDB, Toolz, "
+            "and Boltons. The selected project does not match one of them."
+        )
+    else:
+        ucs_mean_nodes = project_results[
+            "fullcover_UCS_nodes_expanded"
+        ].mean()
+        astar_mean_nodes = project_results[
+            "fullcover_AStar_nodes_expanded"
+        ].mean()
+
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric(
+            "UCS mean full-cover cost",
+            f'{project_results["fullcover_UCS_cost_s"].mean():.5f} s'
+        )
+        col2.metric(
+            "A* mean full-cover cost",
+            f'{project_results["fullcover_AStar_cost_s"].mean():.5f} s'
+        )
+        col3.metric("UCS mean nodes expanded", f"{ucs_mean_nodes:.1f}")
+        col4.metric(
+            "A* mean nodes expanded",
+            f"{astar_mean_nodes:.1f}",
+            delta=f"{ucs_mean_nodes - astar_mean_nodes:+.1f} vs UCS"
+        )
+
+        comparison_columns = {
+            "instance_seed": "Instance",
+            "tests": "Tests",
+            "fullcover_UCS_cost_s": "UCS cost (s)",
+            "fullcover_AStar_cost_s": "A* cost (s)",
+            "fullcover_UCS_nodes_expanded": "UCS nodes expanded",
+            "fullcover_AStar_nodes_expanded": "A* nodes expanded",
+        }
+        st.dataframe(
+            project_results[list(comparison_columns)].rename(
+                columns=comparison_columns
+            ).round(6),
+            use_container_width=True,
+            hide_index=True
+        )
+        st.caption(
+            f"Mean values cover {len(project_results)} saved instances. "
+            "The full-coverage solution costs and node counts are reported "
+            "per instance; these small-instance results are not mixed into "
+            "the main optimizer benchmarks."
+        )
+else:
+    st.warning("Saved exact small-instance results were not found.")
 

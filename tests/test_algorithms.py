@@ -161,6 +161,18 @@ def test_ucs_finds_best_sample_coverage():
     assert result["coverage_percentage"] == pytest.approx(83.333333)
 
 
+def test_ucs_reports_search_effort_and_completes_small_problem():
+    problem = create_sample_problem()
+    optimizer = SearchOptimizer(problem)
+
+    selected = optimizer.uniform_cost_search()
+    result = problem.evaluate(selected)
+
+    assert optimizer.nodes_expanded > 0
+    assert optimizer.nodes_expanded < optimizer.max_states
+    assert result["feasible"]
+
+
 def test_astar_finds_best_sample_coverage():
     problem = create_sample_problem()
 

@@ -3,7 +3,7 @@
 **Running fewer tests without missing bugs.**
 AL-2002 Artificial Intelligence Lab · FAST-NUCES Karachi · Fall 2026
 
-Large projects re-run hundreds of automated tests after every change, and many of those tests check the same lines of code. This project chooses a smaller set of tests that still covers as much code as possible within a time budget (for example, "run only 5% of the usual test time"). Choosing that set is an NP-hard budgeted maximum-coverage problem, so it is solved with AI search: hill climbing and simulated annealing on full suites, compared with greedy and random baselines, and checked against the true optimum found by uniform-cost search, A\* and a CSP solver on small sub-suites. Test durations come from a Kalman filter over 10 noisy timing runs, and every selection is checked by seeding small bugs (mutants) into the code and counting how many the smaller test set still catches. Two machine-learning studies (K-Means clustering and linear regression) analyse the collected data. All data comes from the real test suites of three open-source Python projects.
+Large projects re-run hundreds of automated tests after every change, and many of those tests check the same lines of code. This project chooses a smaller set of tests that still covers as much code as possible within a time budget (for example, "run only 5% of the usual test time"). Choosing that set is an NP-hard budgeted maximum-coverage problem, so it is solved with AI search: hill climbing and simulated annealing on full suites, compared with greedy and random baselines, and checked against the true optimum found by uniform-cost search, A\* and a CSP solver on small sub-suites. Test durations come from a Kalman filter over 10 noisy timing runs, and every selection is checked by seeding small bugs (mutants) into the code and counting how many the smaller test set still catches. Supporting AI studies (K-Means clustering, linear regression and a Markov model of repeated execution-time states) analyse the collected data separately from the optimizers. All data comes from the real test suites of three open-source Python projects.
 
 ---
 
@@ -29,6 +29,7 @@ Large projects re-run hundreds of automated tests after every change, and many o
 | 10 | Exploratory data analysis | `notebooks/eda.ipynb`: duration distribution, timing noise, coverage overlap, lines covered by one test |
 | ML | Unsupervised learning: K-Means | `src/ai_demos/kmeans_clustering.py` |
 | ML | Supervised learning: linear regression | `src/ai_demos/linear_regression.py` (5-fold cross-validation, compared with two baselines) |
+| ML | Markov model of execution-time states | `src/ai_demos/markov_model.py` (transition probabilities learned from runs 1–8; held-out prediction on runs 9–10) |
 
 ---
 
@@ -53,10 +54,10 @@ Test_suite_Optimizer/
 │   ├── collect/                # test discovery, coverage, timing and mutation (bug seeding)
 │   ├── app/                    # project analyser and experiment runner used by the dashboard
 │   ├── evaluation/             # comparison tables and charts
-│   └── ai_demos/               # K-Means and linear regression
+│   └── ai_demos/               # K-Means, linear regression and Markov model
 ├── frontend/                   # Streamlit dashboard (app.py + pages/)
 ├── results/                    # CSV results, charts/ and ml/
-└── tests/                      # 51 unit tests (pytest)
+└── tests/                      # 59 unit tests (pytest)
 ```
 
 ---
@@ -80,10 +81,11 @@ On macOS / Linux use `source .venv/bin/activate`. The processed data is already 
 ## How to run
 
 ```powershell
-python -m pytest tests                        # 51 unit tests
+python -m pytest tests                        # 59 unit tests
 python run_experiments.py                     # all optimiser experiments + charts (10-20 min; --seeds 5 is quicker)
 python -m src.ai_demos.kmeans_clustering      # K-Means results in results/ml/
 python -m src.ai_demos.linear_regression      # regression results in results/ml/
+python -m src.ai_demos.markov_model           # Markov matrices and held-out predictions
 streamlit run frontend/app.py                 # dashboard at http://localhost:8501
 jupyter notebook notebooks/eda.ipynb          # exploratory data analysis
 ```
@@ -156,6 +158,8 @@ Even at 100% line coverage, the guided methods catch at most 93.1% (TinyDB), 97.
 
 **Unsupervised learning (K-Means on log-scaled features):** k = 3, 2 and 3 with silhouette 0.59, 0.55 and 0.43; TinyDB and boltons each have a cluster of slow, low-yield tests (33 and 19 covered lines per millisecond, against 110–450 for their other clusters); toolz splits into small fast tests and larger, slower ones of similar yield.
 
+**Markov model (Fast/Medium/Slow timing states):** state cutoffs are the one-third and two-thirds quantiles of passing observations from runs 1–8, computed separately for each project. Consecutive per-test transitions in those runs train the transition matrix; each passing test with runs 9 and 10 supplies one held-out next-state prediction. The Markov model achieved 64.9% accuracy on TinyDB (31.6% majority-state baseline), 77.7% on toolz (53.4% baseline), and 74.2% on boltons (33.4% baseline). The training split contained 1,596, 1,351 and 4,340 transitions respectively, evaluated on 228, 193 and 620 held-out transitions. This is a useful small one-step experiment, not evidence of generalization to other projects or environments: all predictions come from one final run pair on the same suites, and only ten timing runs per test were collected. See [the project report](docs/project_report.md) for the protocol and detailed results.
+
 ---
 
 ## Known limitations
@@ -165,6 +169,7 @@ Even at 100% line coverage, the guided methods catch at most 93.1% (TinyDB), 97.
 - **Pre-collected data:** selection does not look at which lines the latest commit changed.
 - **Exact search on small instances only:** UCS, A\* and the CSP run on 15-test sub-suites, because they are exponential.
 - **Fast suites:** all three suites take under 4 s in total, so absolute savings are small, although the method is the same for slow suites.
+- **Markov timing experiment:** only ten repeated runs are available per test; evaluation uses the final run pair from the same collected suites, so it does not measure transfer to future environments or independent projects.
 - **No flaky-test handling. Python projects only.**
 
 ---

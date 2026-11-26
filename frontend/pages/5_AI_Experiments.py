@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from frontend.components.theme import load_css
+from src.ai_demos.markov_model import run_markov_experiment
 
 ROOT = Path(__file__).resolve().parents[2]
 ML_DIR = ROOT / "results" / "ml"
@@ -324,10 +325,95 @@ else:
         "Kalman duration estimates for this project were not found."
     )
 
+# MARKOV MODEL
+st.divider()
+
+st.header("Markov Model Test Duration States")
+
+st.write(
+    "This separate experiment classifies recorded execution times as Fast, "
+    "Medium, or Slow, then estimates the probability of the next state from "
+    "consecutive runs. State boundaries and transitions are learned only "
+    "from runs 1–8; predictions are evaluated on each test's held-out "
+    "run-9-to-10 transition."
+)
+
+markov_timing = read_csv(
+    DATA_DIR / f"{project_key}_timing_runs.csv"
+)
+
+if markov_timing is not None and not markov_timing.empty:
+    markov_result = run_markov_experiment(markov_timing)
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric(
+        "Training transitions",
+        markov_result.training_transitions
+    )
+    col2.metric(
+        "Held-out predictions",
+        markov_result.held_out_predictions
+    )
+    col3.metric(
+        "Held-out accuracy",
+        f"{markov_result.accuracy:.1%}",
+        delta=(
+            f"{markov_result.accuracy - markov_result.baseline_accuracy:+.1%}"
+            " vs majority baseline"
+        )
+    )
+
+    state_counts = ", ".join(
+        f"{state} {count}"
+        for state, count in markov_result.state_counts.items()
+    )
+    st.caption(
+        f"Majority-state baseline: {markov_result.baseline_accuracy:.1%}. "
+        f"Training-only boundaries: Fast ≤ "
+        f"{markov_result.medium_upper_seconds:.6f} s, Medium ≤ "
+        f"{markov_result.slow_lower_seconds:.6f} s, otherwise Slow. "
+        f"Training state observations: {state_counts}."
+    )
+
+    st.subheader("Transition Probability Matrix")
+    show_left_aligned_table(
+        markov_result.transition_probabilities.reset_index().round(4)
+    )
+
+    st.subheader("Held-out Prediction Outcomes")
+    show_left_aligned_table(
+        markov_result.confusion_matrix.reset_index()
+    )
+    st.caption(
+        "Rows are actual run-10 states and columns are predicted states. "
+        "Only consecutive passed timing observations are used; skipped and "
+        "zero-duration records are excluded. Results are a one-step "
+        "evaluation on the same collected suites, not evidence of "
+        "cross-project generalization."
+    )
+
+    st.subheader("Sample Held-out Predictions")
+    show_left_aligned_table(
+        markov_result.predictions[
+            [
+                "node_id",
+                "previous_state",
+                "predicted_state",
+                "actual_state",
+                "correct",
+            ]
+        ].head(10)
+    )
+else:
+    st.warning(
+        "Raw timing observations for the Markov experiment were not found."
+    )
+
 # FOOTER
 
 st.caption(
     "Experiments use saved project datasets and results. "
-    "K-Means is a supporting unsupervised-learning experiment; "
-    "the core test-selection algorithms are evaluated separately."
+    "K-Means, linear regression, and the Markov model are supporting "
+    "experiments; the core test-selection algorithms are evaluated separately."
 )
